@@ -4,13 +4,29 @@ const hbs = require("hbs")
 const path = require("path")
 require("dotenv").config();
 const bodyParser = require("body-parser")
-const passport=require("passport")
+const passport = require("passport")
 
 const app = express()
+
+
+
+
+
+
+
+
+
+
+
+
+
 const userRoute = require("./server/route/userRoute")
 const adminRoute = require("./server/route/adminroute")
 
 app.set("view engine", "hbs")
+const helper = require("./helper")
+
+
 
 app.use(passport.initialize());
 // app.use(passport.session())
@@ -19,6 +35,33 @@ app.use(passport.initialize());
 
 const partials = path.join(__dirname, "views/partials")
 hbs.registerPartials(partials)
+
+hbs.registerHelper('multiply', helper.multiply);
+hbs.registerHelper('calculateTotal', helper.calculateTotal);
+hbs.registerHelper('calculateGrandTotal', helper.calculateGrandTotal);
+hbs.registerHelper('json', helper.json);
+
+
+hbs.registerHelper('ifEquals', function (arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
+// used in increment and decrement in cart page of the user
+hbs.registerHelper('ifNotEquals', function (arg1, arg2, options) {
+    return (arg1 == arg2) ? options.inverse(this) : options.fn(this);
+});
+
+
+hbs.registerHelper('ifNotIn', function (value, array, options) {
+    // Split the array string into an array of values
+    const valuesArray = array.split(',');
+
+    // Check if the value is not in the array
+    if (valuesArray.indexOf(value) === -1) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+});
 
 
 
@@ -32,6 +75,7 @@ app.use(session({
 
 }))
 
+
 app.use((req, res, next) => {
     res.header("Cache-Control", "private,no-cache,no-store, must-revalidate");
     res.header("Expires", "-1");
@@ -39,25 +83,23 @@ app.use((req, res, next) => {
     next();
 });
 
-// to multiply two numbers in the hbs
-hbs.registerHelper('multiply', function (a, b) {
-    return a * b;
+
+// Helper to negate a value
+hbs.registerHelper('not', function (value) {
+    return !value;
 });
 
-// to set the current in the correct format in hbs
+// Helper to check if the transaction is 'Credited'
+hbs.registerHelper('isCredited', function (transaction, options) {
+    return transaction === 'Credited' ? options.fn(this) : options.inverse(this);
+});
+
+// // to set the current in the correct format in hbs
 hbs.registerHelper('formatDate', function (date) {
     return new Date(date).toDateString();
 });
 
-// code to check if the string is equal or note in hbs
-hbs.registerHelper('ifEquals', function (arg1, arg2, options) {
-    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-});
 
-// used in increment and decrement in cart page of the user
-hbs.registerHelper('ifNotEquals', function (arg1, arg2, options) {
-    return (arg1 == arg2) ? options.inverse(this) : options.fn(this);
-});
 
 
 app.use(bodyParser.json())

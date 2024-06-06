@@ -40,8 +40,8 @@ const productSchema = new mongoose.Schema({
     },
 
     list: {
-        type: Boolean,
-        default: true
+        type: Number,
+        default: 0
     },
 
     display: {
@@ -58,10 +58,11 @@ const productSchema = new mongoose.Schema({
         // required: true
     },
 
-    catOffer: {
-        type: Number,
+    // catOffer: {
+    //     type: Number,
 
-    }
+    // }
+     
 })
 
 

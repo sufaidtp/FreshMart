@@ -103,8 +103,10 @@ const block = async (req, res) => {
         const userData = await userDetails.findOne({ username: name })
         let val = 1
         if (userData.status == 1)
+
             val = 0
         await userDetails.updateOne({ username: name }, { $set: { status: val } })
+        
         res.redirect("/admin/userDetails")
 
     } catch (e) {
@@ -122,7 +124,7 @@ const list = async (req, res) => {
         if (productData.list == 1)
             val = 0
         await editCat.updateMany({ name: name }, { $set: { list: val } })
-        await productDetails.updateMany({ category: name }, { $set: { list: val } })
+        await productDetails.updateMany({ category: productData._id }, { $set: { list: val } })
         res.redirect(`/admin/category?val=${val}`)
 
 

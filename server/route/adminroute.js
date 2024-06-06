@@ -5,6 +5,7 @@ const adminCheck = require("../middleware/adminMiddleware")
 const productController = require("../controller/adminController/productController")
 const adminCategory = require("../controller/adminController/categoryController")
 const imageUpload = require("../controller/adminController/imageController")
+const orderController = require("../controller/adminController/orderController")
 
 
 router.get("/", adminController.admin)
@@ -33,16 +34,29 @@ router.get("/list/:id", adminCheck.isAdmin, adminController.list)
 // list the product
 
 router.get("/products", adminCheck.isAdmin, productController.productData)
-router.post("/products", adminCheck.isAdmin ,imageUpload.array('images',5),productController.addProduct)
+router.post("/products", adminCheck.isAdmin, imageUpload.array('images', 5), productController.addProduct)
 router.get("/add_products", adminCheck.isAdmin, productController.add_products)
 router.get("/edit_product/:id", adminCheck.isAdmin, productController.editproduct)
-router.post("/edit_product/:id",adminCheck.isAdmin,imageUpload.array('images',5),productController.edit_product)
+router.post("/edit_product/:id", adminCheck.isAdmin, imageUpload.array('images', 5), productController.edit_product)
 router.post("/searchProduct", adminCheck.isAdmin, productController.searchProduct)
 router.get('/delete/:id', adminCheck.isAdmin, productController.list_product)
+router.get("/ImageDelete/:id", adminCheck.isAdmin, productController.deleteImage)
 
+//order controll
 
+router.get("/orderHistory", adminCheck.isAdmin, orderController.orderHistory)
+router.get('/orderDetails', adminCheck.isAdmin, orderController.order_Detail)
+router.post('/changeStatus', adminCheck.isAdmin, orderController.changeStatus)
 
+// coupon controll
 
+router.get("/coupon",adminCheck.isAdmin,orderController.coupon)
+router.post("/addCoupon",adminCheck.isAdmin,orderController.addCoupon)
+router.get("/removeCoupon",adminCheck.isAdmin,orderController.removeCoupon)
+router.post("/editCoupon",adminCheck.isAdmin,orderController.editCoupon)
+
+router.get("/returnView",adminCheck.isAdmin,orderController.returnView)
+router.post('/handleReturnRequest',adminCheck.isAdmin,orderController.handleReturnRequest)
 
 
 

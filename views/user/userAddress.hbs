@@ -1,0 +1,306 @@
+{{> userheader}}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" rel="stylesheet">
+</head>
+
+<body>
+
+
+    <style>
+        .menu {
+            background-color: #3F8D56;
+        }
+
+        .border-right {
+            margin-top: 10%;
+        }
+
+        .form-control {
+            font-size: medium;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #BA68C8;
+
+        }
+
+        .profile-button {
+            background: rgb(99, 39, 120);
+            box-shadow: none;
+            border: none
+        }
+
+        .profile-button:hover {
+            background: #682773
+        }
+
+        .profile-button:focus {
+            background: #682773;
+            box-shadow: none
+        }
+
+        .profile-button:active {
+            background: #682773;
+            box-shadow: none
+        }
+
+        .back:hover {
+            color: #682773;
+            cursor: pointer
+        }
+
+        .labels {
+            font-size: 13px
+        }
+
+        .add-experience:hover {
+            background: #BA68C8;
+            color: #fff;
+            cursor: pointer;
+            border: solid 1px #BA68C8
+        }
+
+        .labels {
+            font-size: medium;
+        }
+    </style>
+
+
+    <div class="container rounded bg-white mt-5 mb-5" style="margin-left: 11%;">
+        <div class="row">
+            <div class="col-md-3 border-right">
+                {{!-- <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img
+                        class="rounded-circle mt-5" width="150px"
+                        src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span
+                        class="font-weight-bold">Edogaru</span><span
+                        class="text-black-50">edogaru@mail.com.my</span><span> </span></div> --}}
+            </div>
+            <div class="col-md-5  border-right">
+                {{#if address}}
+                <form action="/editAddress?id={{address._id}}" method="post" onsubmit="return validateAddress()">
+                    <div class="p-3 py-5">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="text-right">Address Settings</h2>
+                        </div>
+                        {{!-- <div class="row mt-2">
+                            <div class="col-md-6"><label class="labels">Name</label><input type="text"
+                                    class="form-control" placeholder="first name" value=""></div>
+
+                        </div> --}}
+
+                        <div class="row mt-3">
+                            <div class="col-md-12"><label class="labels">Full Name</label><input type="text" id="fullname"
+                                    class="form-control" value="{{address.fullname}}" placeholder="" name="fullname">
+                                <span id="fullnameError" class="text-danger"></span>
+                                <input type="text" value="{{address.fullname}}" hidden name="oldname">
+                                
+                            </div>
+
+
+                            {{!-- <div class="col-md-12"><label class="labels">Email</label><input type="email"
+                                    class="form-control" value="" placeholder="{{address.email}}" name="email"></div>
+                            --}}
+                            <div class="col-md-12"><label class="labels">Mobile No</label><input type="number" id="mobile"
+                                    class="form-control" value="{{address.phone}}" placeholder="" name="phone"> <span
+                                    id="mobileError" class="text-danger"></span></div>
+
+                            <div class="col-md-12"><label class="labels">House Name</label><input type="text" id="adname"
+                                    class="form-control" value="{{address.address.houseName}}" placeholder=""
+                                    name="house"> <span id="adnameError" class="text-danger"></span>
+                            </div>
+
+
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6"><label class="labels">City</label><input type="text" id="city"
+                                    class="form-control" placeholder="country" name="city"
+                                    value="{{address.address.city}}"><span id="cityError" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6"><label class="labels">State/Region</label><input type="text" id="state"
+                                    class="form-control" value="{{address.address.state}}" placeholder="" name="state">
+                                <span id="stateError" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6"><label class="labels">Country</label><input type="text" id="country"
+                                    class="form-control" value="{{address.address.country}}" placeholder=""
+                                    name="country"><span id="countryError" class="text-danger"></span></div>
+                            <div class="col-md-6"><label class="labels">PIN Code</label><input type="number" id="pincode"
+                                    class="form-control" value="{{address.address.pincode}}" placeholder=""
+                                    name="pincode">
+                                <span id="pincodeError" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="mt-5 text-center"><button id="saveChangesButton" class="btn btn-primary profile-button"
+                                type="submit">Save
+                                Profile</button></div>
+                    </div>
+                    {{else }}
+                </form>
+                <form action="/newAddress" method="post" onsubmit="return validateAddress()">
+                    <div class="p-3 py-5">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="text-right">Address Settings</h2>
+                        </div>
+                        {{!-- <div class="row mt-2">
+                            <div class="col-md-6"><label class="labels">Name</label><input type="text"
+                                    class="form-control" placeholder="first name" value=""></div>
+
+                        </div> --}}
+
+                        <div class="row mt-3">
+                            <div class="col-md-12"><label class="labels">Full Name</label><input type="text"
+                                    id="fullname" class="form-control" value="" placeholder="Full Name" name="fullname">
+                                <span id="fullnameError" class="text-danger"></span>
+                                
+                            </div>
+                            {{!-- <div class="col-md-12"><label class="labels">Email</label><input type="email"
+                                    class="form-control" value="" placeholder="Email" name="email"></div> --}}
+                            <div class="col-md-12"><label class="labels">Mobile No</label><input type="number"
+                                    id="mobile" class="form-control" value="" placeholder="Mobile No" name="phone">
+                                <span id="mobileError" class="text-danger"></span>
+
+                            </div>
+                            <div class="col-md-12"><label class="labels">House Name</label><input type="text"
+                                    id="adname" class="form-control" value="" placeholder="House Name" name="house">
+                                <span id="adnameError" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6"><label class="labels">City</label><input type="text" id="city"
+                                    class="form-control" placeholder="country" name="city" value="">
+                                <span id="cityError" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6"><label class="labels">State/Region</label><input type="text"
+                                    id="state" class="form-control" value="" placeholder="state" name="state">
+                                <span id="stateError" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6"><label class="labels">Country</label><input type="text" id="country"
+                                    class="form-control" value="" placeholder="Country" name="country">
+                                <span id="countryError" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6"><label class="labels">PIN Code</label><input type="number"
+                                    id="pincode" class="form-control" value="" placeholder="PIN Code" name="pincode">
+                                <span id="pincodeError" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="mt-5 text-center"><button id="saveChangesButton"
+                                class="btn btn-primary profile-button" type="submit">Save
+                                Profile</button></div>
+                    </div>
+                </form>
+                {{/if}}
+            </div>
+            <div class="col-md-4">
+                {{!-- <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center experience"><span>Edit
+                            Experience</span><span class="border px-3 p-1 add-experience"><i
+                                class="fa fa-plus"></i>&nbsp;Experience</span></div><br>
+                    <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text"
+                            class="form-control" placeholder="experience" value=""></div> <br>
+                    <div class="col-md-12"><label class="labels">Additional Details</label><input type="text"
+                            class="form-control" placeholder="additional details" value=""></div>
+                </div> --}}
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add event listener to the form submission
+        document.querySelector('form').addEventListener('submit', function (event) {
+            // Call the validateAddress function and prevent form submission if validation fails
+            if (!validateAddress()) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    function validateAddress() {
+        var errors = false;
+
+        // Get form input values
+        var fullname = document.getElementById('fullname').value;
+        var mobile = document.getElementById('mobile').value;
+        var adname = document.getElementById('adname').value;
+        var city = document.getElementById('city').value;
+        var state = document.getElementById('state').value;
+        var country = document.getElementById('country').value;
+        var pincode = document.getElementById('pincode').value;
+
+        // Get error spans for displaying validation errors
+        var fullnameError = document.getElementById('fullnameError');
+        var mobileError = document.getElementById('mobileError');
+        var adnameError = document.getElementById('adnameError');
+        var cityError = document.getElementById('cityError');
+        var stateError = document.getElementById('stateError');
+        var countryError = document.getElementById('countryError');
+        var pincodeError = document.getElementById('pincodeError');
+
+        // Reset error messages
+        fullnameError.textContent = '';
+        mobileError.textContent = '';
+        adnameError.textContent = '';
+        cityError.textContent = '';
+        stateError.textContent = '';
+        countryError.textContent = '';
+        pincodeError.textContent = '';
+
+        // Regular expressions for validation
+        var mobileRegex = /^\d{10}$/; // 10-digit mobile number
+        var pincodeRegex = /^\d{6}$/; // 6-digit PIN code
+
+        // Perform validation
+        if (!fullname.trim()) {
+            fullnameError.textContent = 'Full name is required.';
+            errors = true;
+        }
+        if (!mobile.trim()) {
+            mobileError.textContent = 'Mobile no is required.';
+            errors = true;
+        } else if (!mobile.match(mobileRegex)) {
+            mobileError.textContent = 'Invalid mobile number.';
+            errors = true;
+        }
+        if (!adname.trim()) {
+            adnameError.textContent = 'House name is required.';
+            errors = true;
+        }
+        if (!city.trim()) {
+            cityError.textContent = 'City is required.';
+            errors = true;
+        }
+        if (!state.trim()) {
+            stateError.textContent = 'State is required.';
+            errors = true;
+        }
+        if (!country.trim()) {
+            countryError.textContent = 'Country is required.';
+            errors = true;
+        }
+        if (!pincode.trim()) {
+            pincodeError.textContent = 'PIN code is required.';
+            errors = true;
+        } else if (!pincode.match(pincodeRegex)) {
+            pincodeError.textContent = 'Invalid PIN code.';
+            errors = true;
+        }
+
+        // Return whether there are any errors
+        return !errors;
+    }
+</script>
+
+
+
+{{> userfooter}}

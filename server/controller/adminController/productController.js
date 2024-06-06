@@ -5,11 +5,13 @@ const imageCon = require("../adminController/imageController")
 const bcrypt = require("bcrypt")
 const pathModule = require("path")
 const sharp = require("sharp")
-const categoryDetails=require("../../model/categoryModel")
+const categoryDetails = require("../../model/categoryModel")
 
 const fs = require("fs")
 const exp = require("constants")
 const categoryModel = require("../../model/categoryModel")
+
+
 
 
 
@@ -94,9 +96,9 @@ const editproduct = async (req, res) => {
     try {
         console.log(req.params.id)
         const productData = await productDetails.findOne({ _id: req.params.id })
-        const categoryData=await categoryDetails.find({})
+        const categoryData = await categoryDetails.find({})
         console.log(productData)
-        res.render("admin_edit_product", { productData,categoryData })
+        res.render("admin_edit_product", { productData, categoryData })
     } catch (e) {
         console.log(e, 'error')
     }
@@ -130,7 +132,7 @@ const edit_product = async (req, res) => {
                     $set: {
                         name: req.body.name,
                         category: req.body.category,
-                        about: req.body.about,
+                        description: req.body.description,
                         price: req.body.price,
                         stock: req.body.stock,
                         // discountAmount: req.body.offerPrice,
@@ -186,6 +188,21 @@ const list_product = async (req, res) => {
 }
 
 
+const deleteImage = async (req, res) => {
+    try {
+        const productId = req.params.id; // Assuming id is passed in params
+        const imageToDelete = req.query.delete;
+        console.log(productId, " img id................................");
+        console.log(imageToDelete)
+        await productDetails.updateOne({ _id: productId }, { $pull: { imagePath: imageToDelete } })
+        res.redirect(`/admin/edit_product/${productId}`)
+
+
+
+    } catch (e) {
+        console.log("error with delete image in admine side", e);
+    }
+}
 
 
 
@@ -199,6 +216,4 @@ const list_product = async (req, res) => {
 
 
 
-
-
-module.exports = { productData, addProduct, add_products, editproduct, edit_product, searchProduct, list_product }
+module.exports = {  productData, addProduct, add_products, editproduct, edit_product, searchProduct, list_product, deleteImage }

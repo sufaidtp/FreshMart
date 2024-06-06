@@ -1,0 +1,169 @@
+{{> userheader}}
+
+
+
+
+
+
+
+
+
+<style>
+
+  .menu{
+    background-color: #3F8D56;
+  }
+  /* Custom CSS */
+  .profile-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    margin-top: 5%;
+  }
+
+  .btn-full-block {
+    display: block;
+    width: 100%;
+    background-color:white;
+    color: black;
+  }
+
+  .card-body {
+    position: relative;
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+
+  .card-body:hover {
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    transform: translateY(-5px);
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info-item {
+    margin-bottom: 10px;
+  }
+
+  .info-item strong {
+    font-weight: bold;
+    margin-right: 10px;
+    color: black;
+  }
+
+  .info-item span {
+    color: #555;
+  }
+</style>
+
+
+<div class="container profile-container">
+  <div class="row">
+    <div class="col-md-12 border border-3 text-center mb-4 p-4">
+      <h2 class="mb-4" style="font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; color: #333; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 20px;">Account Settings</h2>
+
+
+      <div class="user-info">
+        <div class="info-item">
+          <strong></strong>
+          <h3 id="reset" style="color: rgb(245, 29, 29);">{{reset}}</h3>
+        </div>
+        <div class="info-item">
+          <strong></strong>
+           
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="col-md-12">
+      <h2 class="text-center"></h2>
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <img src="/img/19197382.png" width="150px" height="150px" alt="order-img">
+              <a href="/orders" class="btn btn-success btn-full-block">
+                My Orders
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <img src="/img/resetPassword.jpg" width="150px" height="150px" alt="resetpass-img">
+              <a href="/newPassword" class="btn btn-success btn-full-block">
+                ResetPassword
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <img src="/img/profile.jpg" width="150px" height="150px" alt="coupen img">
+              <a href="/userProfile/{{userIn}}" class="btn btn-success btn-full-block">
+                my profile
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <img src="/img/wallet.jpg" width="150px" height="150px" alt="wallet-img">
+              <a href="/wallet" class="btn btn-success mt-3 btn-full-block">
+                Wallet
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <img src="/img/address.jpg" width="150px" height="150px" alt="address-img">
+              <a href="/userAdresslist/{{userIn}}" class="btn btn-success mt-3 btn-full-block">
+                Address
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <img src="/img/logout.jpg" width="150px" height="150px" alt="logout">
+              <a href="/signout" class="btn btn-success mt-3 btn-full-block">
+                Log Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+
+
+<script>
+  const value = document.getElementById('reset')
+    setTimeout(() => {
+        value.style.display = " none"
+    }, 5000)
+</script>
+
+
+
+{{> userfooter}}

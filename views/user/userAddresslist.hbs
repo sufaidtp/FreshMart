@@ -1,0 +1,202 @@
+{{> userheader}}
+
+
+
+
+
+
+
+
+
+<style>
+    .menu {
+        background-color: #3F8D56;
+    }
+
+    /* Custom CSS */
+    .profile-container {
+        max-width: 900px;
+        margin: auto;
+        padding: 40px;
+        margin-top: 5%;
+    }
+
+    .btn-full-block {
+        display: block;
+        width: 100%;
+        background-color: white;
+        color: black;
+        margin-bottom: 15%;
+    }
+
+    .card-body {
+        width: 300px;
+        text-align: center;
+        position: relative;
+        font-size: small;
+        font-weight: 700;
+        transition: box-shadow 0.3s, transform 0.3s;
+        height: 250px;
+        justify-content: center;
+
+    }
+
+    
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-item {
+        margin-bottom: 10px;
+    }
+
+    .info-item strong {
+        font-weight: bold;
+        margin-right: 10px;
+        color: black;
+    }
+
+    .info-item span {
+        color: #555;
+    }
+</style>
+
+
+<div class="container profile-container">
+    <div class="row">
+        <div class="col-md-12 border border-3 text-center mb-4 p-4">
+            <h2 class="mb-4"
+                style="font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; color: #333; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 20px;">
+                Address list</h2>
+            <h3 id="delFound" style="color: red;">{{del}}</h3>
+            <h3 id="sucFound" style="color: rgb(66, 105, 75);">{{suc}}</h3>
+            
+
+
+            <div class="user-info">
+                <div class="info-item">
+                    <strong></strong>
+                    {{!-- <h3>{{user.username}}</h3> --}}
+                </div>
+                <div class="info-item">
+                    <strong></strong>
+                    {{!-- <span>{{user.email}}</span> --}}
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="col-md-12">
+            <h2 class="text-center"></h2>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <img src="/img/address.png" width="150px" height="150px" alt="order-img">
+                            <a href="/addAddress" class="btn btn-success btn-full-block">
+                                Add Address
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {{#each userAddress}}
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <p>Name : {{this.fullname}}</p>
+                            <p>Mobile : {{this.phone}}</p>
+                            <p>Address : {{this.address.houseName}} {{this.address.city}} {{this.address.state}}</p>
+
+                            <p>Pin Cod : {{this.address.pincode}}</p>
+                            <p>Country : {{this.address.country}}</p>
+                            {{!-- <img src="/img/resetPassword.jpg" width="150px" height="150px" alt="resetpass-img">
+                            <a href="/ChangePass" class="btn btn-success btn-full-block">
+                                ResetPassword
+                            </a> --}}
+                            <a href="/editAddress?id={{this._id}}" class="btn btn-primary">Edit</a>
+                            <a href="/deleteAddress?id={{this._id}}" class="btn btn-danger">Delete</a>
+                            
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+                {{!-- <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <img src="/img/profile.jpg" width="150px" height="150px" alt="coupen img">
+                            <a href="/userProfile/{{userIn}}" class="btn btn-success btn-full-block">
+                                my profile
+                            </a>
+                        </div>
+                    </div>
+                </div> --}}
+            </div>
+            <br>
+            <br>
+            {{!-- <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <img src="/img/wallet.jpg" width="150px" height="150px" alt="wallet-img">
+                            <a href="#" class="btn btn-success mt-3 btn-full-block">
+                                Wallet
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <img src="/img/address.jpg" width="150px" height="150px" alt="address-img">
+                            <a href="/userAdress/{{userIn}}" class="btn btn-success mt-3 btn-full-block">
+                                Address
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <img src="/img/logout.jpg" width="150px" height="150px" alt="logout">
+                            <a href="/signout" class="btn btn-success mt-3 btn-full-block">
+                                Log Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+
+
+<script>
+
+   
+
+    const value = document.getElementById('sucFound')
+    setTimeout(() => {
+        value.style.display = " none"
+    }, 5000)
+    const del = document.getElementById('delFound')
+    setTimeout(() => {
+        del.style.display = " none"
+    }, 5000)
+
+    document.addEventListener('DOMContentLoaded', function () {
+        new MagicZoom();
+    });
+</script>
+
+
+
+{{> userfooter}}

@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const sndmail = require("../userController/generateOtp")
 const catDetails = require("../../model/categoryModel")
 const productModel = require("../../model/productModel")
-const passport=require("passport")
+const passport = require("passport")
 const { googleSignIn } = require("../../../googleAuth")
 
 
@@ -12,9 +12,12 @@ const { googleSignIn } = require("../../../googleAuth")
 
 const home = async (req, res) => {
     try {
-        const productData = await productModel.find({display:true})
+        const productData = await productModel.find({ display: true, list:0})
+        const Category=await catDetails.find({list:0})
         console.log(productData)
-        res.render("home", { productData })
+        console.log(Category);
+        userIn = req.session.userName;
+        res.render("home", { productData ,Category , userIn})
 
     } catch (e) {
         console.log("error in the home usercontroller in user side : " + e)
@@ -53,8 +56,10 @@ const login = async (req, res) => {
             const block = req.query.block
             const username = req.query.username
             const pass = req.query.pass
+            
 
-            res.render("login", { block, username, pass })
+
+            res.render("login", { block, username, pass  })
         }
     } catch (e) {
         console.log("error in the login usercontroller in user side : " + e);

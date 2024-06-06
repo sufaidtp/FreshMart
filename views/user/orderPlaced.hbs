@@ -1,0 +1,123 @@
+{{> userheader}}
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .order-confirmation {
+        text-align: center;
+    }
+
+    .order-confirmation h1 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .order-details {
+        text-align: left;
+    }
+
+    .order-details p {
+        margin: 10px 0;
+    }
+
+    .order-details strong {
+        color: #333;
+    }
+
+    .products ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .products li {
+        margin: 5px 0;
+    }
+
+    .address p {
+        margin: 5px 0;
+    }
+
+    #orderID,
+    #userName,
+    #totalOrderValue,
+    #userAddress,
+    #paymentMethod,
+    #orderStatus {
+        color: #555;
+    }
+</style>
+
+<!-- Main Content -->
+<div id="content" class="site-content">
+    <!-- Breadcrumb -->
+    <div id="breadcrumb">
+        <div class="container">
+            <h2 class="title">Shopping Cart</h2>
+            <ul class="breadcrumb">
+                <li><a href="#" title="Home">Home</a></li>
+                <li><span>OrderPlaced</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="order-confirmation">
+            <h1>Order Confirmation</h1>
+            <div class="order-details">
+                <p><strong>Order ID:</strong> <span id="orderID">{{data.orderID}}</span></p>
+                <p><strong>User:</strong> <span id="userName">{{data.user}}</span></p>
+                <div class="products">
+                    <strong>Products:</strong>
+                    <ul id="productList">
+                        {{#each data.products}}
+                        <li>{{this.product}} - Rs.{{this.price}} -  Quantity {{this.quentity}}</li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <p><strong>Total Order Value:</strong> <span id="totalOrderValue">{{data.totalOrderValue}}</span></p>
+                <p><strong>Discount:</strong> <span id="totalOrderValue">{{data.discount}}</span></p>
+                <div class="address">
+                    <strong>Address:</strong>
+                    <p id="userAddress">
+                        {{data.address.address.houseName}} {{data.address.address.city}} <br>
+                        {{data.address.address.state}}, {{data.address.address.pincode}}<br>
+                        {{data.address.address.country}}
+                    </p>
+                </div>
+                <p><strong>Payment Method:</strong> <span id="paymentMethod">{{data.paymentMethod}}</span></p>
+                <p><strong>Status:</strong> <span id="orderStatus" style="color: green; font-weight: bold;">Placed</span></p>
+            </div>
+        </div>
+
+        <a href="/" class="btn btn-success" style="margin-left: 40%;">Continue Shopping</a>
+    </div>
+
+
+</div>
+{{> userfooter}}
+
+
+
+

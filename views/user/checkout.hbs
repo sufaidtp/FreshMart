@@ -1,0 +1,521 @@
+{{> userheader}}
+
+
+
+<!-- Main Content -->
+<div id="content" class="site-content">
+    <!-- Breadcrumb -->
+    <div id="breadcrumb">
+        <div class="container">
+            <h2 class="title">Shopping Cart</h2>
+
+            <ul class="breadcrumb">
+                <li><a href="#" title="Home">Home</a></li>
+                <li><span>Shopping Cart</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-checkout">
+            <div class="row">
+                {{#each address}}
+                <div class="col-md-3"> <!-- Changed to col-md-6 for two columns layout -->
+                    <input type="radio" name="addressId" id="addressId" onclick="addressSelect('{{this._id}}')" value=""
+                        class="mb-2">
+                    <div class="card mb-3" style="border: 2px solid #d0d7d2; border-radius: 10px;">
+                        <div class="card-body" style="text-align: center;">
+                            <h5 class="card-title" style="font-weight: bold;">Address</h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary" style="font-weight: bold;">
+                                <strong>Full Name</strong>: {{this.fullname}}
+                            </h6>
+                            <p class="card-text" style="font-weight: bold;"><strong>Mobile no</strong>: {{this.phone}}
+                            </p>
+                            <p class="card-text" style="font-weight: bold;">
+                                <strong>House Name</strong>: {{this.address.houseName}}, {{this.address.city}},
+                                {{this.address.state}}
+                                <br> {{this.address.country}}
+                            </p>
+                            <p class="card-text" style="font-weight: bold;"><strong>PIN Code</strong>:
+                                {{this.address.pincode}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+
+            <div class="checkout-left col-lg-9 col-md-9 col-sm-9 col-xs-12">
+
+                <div class="panel-group" id="accordion">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                                    href="#collapseOne">
+                                    Create New Address
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="accordion-body collapse" style="height: 0px;">
+                            <div class="panel-body">
+                                <form action="/createAddress" id="formaddress" method="post"
+                                    onsubmit="return validateAddress()" class="form-horizontal">
+
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label>Full Name</label>
+                                            <input type="text" value="" id="fullname" class="form-control"
+                                                name="fullname">
+                                            <span id="fullnameError" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label>Mobile No </label>
+                                            <input type="number" value="" id="mobile" class="form-control" name="phone">
+                                            <span id="mobileError" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label>House Name </label>
+                                            <input type="text" value="" id="adname" class="form-control" name="house">
+                                            <span id="adnameError" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-6">
+                                            <label>City </label>
+                                            <input type="text" value="" id="city" class="form-control" name="city">
+                                            <span id="cityError" class="text-danger"></span>
+                                        </div>
+
+
+                                        <div class="col-md-6">
+                                            <label>State/Region</label>
+                                            <input type="text" value="" id="state" class="form-control" name="state">
+                                            <span id="stateError" class="text-danger"></span>
+                                        </div>
+
+
+                                        <div class="col-md-6">
+                                            <label>Country</label>
+                                            <input type="text" value="" id="country" class="form-control"
+                                                name="country">
+                                            <span id="countryError" class="text-danger"></span>
+                                        </div>
+
+
+                                        <div class="col-md-6">
+                                            <label>PIN Code</label>
+                                            <input type="number" value="" id="pincode" class="form-control"
+                                                name="pincode">
+                                            <span id="pincodeError" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <input type="submit" value="Save" id="saveChangesButton"
+                                                class="btn pull-right">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                                    href="#collapseThree">
+                                    Payment
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="accordion-body collapse" style="height: 0px;">
+                            <div class="panel-body">
+                                <table class="cart-summary table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="width-80 text-center">Image</th>
+                                            <th>Name</th>
+                                            <th class="width-100 text-center">Unit price</th>
+                                            <th class="width-100 text-center">Qty</th>
+                                            <th class="width-100 text-center">Total</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        {{#each cartData}}
+                                        <tr>
+                                            <td>
+                                                <a href="product-detail-left-sidebar.html">
+                                                    <img width="80" alt="Product Image" class="img-responsive"
+                                                        src="{{this.image}}">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="product-detail-left-sidebar.html"
+                                                    class="product-name">{{this.product}}</a>
+                                            </td>
+                                            <td class="text-center">
+                                                {{this.price}}
+                                            </td>
+                                            <td class="text-center">
+                                                {{this.quentity}}
+                                            </td>
+                                            <td class="text-center">
+                                                {{multiply this.price this.quentity}}
+                                            </td>
+                                        </tr>
+
+                                        {{/each}}
+
+                                    </tbody>
+                                </table>
+
+
+                                <h4 class="heading-primary">Coupon</h4>
+                                <form id="couponForm" class="form-inline">
+                                    <div class="form-group">
+                                        <label for="couponCode">Coupon Code: </label>
+                                        <input type="text" id="couponCode" class="form-control" name="couponCode">
+                                        <button type="button" id="applycoupon" class="btn btn-primary" onclick="applyCoupon()">Apply
+                                            Coupon</button>
+                                        <button type="button" id="removeCouponButton" class="btn btn-danger hidden"
+                                            onclick="removeCoupon()">Remove Coupon</button>
+                                    </div>
+                                    <span id="couponError" class="text-danger"></span>
+                                </form>
+
+                                <h4 class="heading-primary">Payment</h4>
+                                <form action="#" method="post">
+                                    <div class="item">
+                                        <input name="name" type="radio" onclick="paymentMethod('COD')">COD
+                                    </div>
+                                    <div class="item">
+                                        <input name="name" type="radio" onclick="paymentMethod('Online')">Online
+                                        Payment
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pull-right">
+                    {{!-- <input type="" value="Place Order" name="proceed" class="btn btn-primary"> --}}
+                    <button class="btn btn-primary" onclick="proceed()"> Place Order</button>
+                </div>
+            </div>
+
+
+            <div class="checkout-right col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <h4 class="title">Cart Total</h4>
+                <table class="table cart-total">
+                    <tbody>
+                        <tr class="cart-subtotal">
+                            <th>
+                                <strong>Cart Subtotal</strong>
+                            </th>
+                            <td>
+                                <strong><span>Rs.{{total}}</span></strong>
+                            </td>
+                        </tr>
+                        <tr class="shipping">
+                            <th>
+                                Shipping
+                            </th>
+                            <td>
+                                Free shipping<input type="hidden" value="free_shipping" class="shipping-method"
+                                    name="shipping_method">
+                            </td>
+                        </tr>
+                        <tr class="discount">
+                            <th>
+                                Discount
+                            </th>
+                            <td>
+                                <p id="discountamount">Rs 0</p><input type="hidden" value="free_shipping"
+                                    class="shipping-method" name="shipping_method">
+                            </td>
+                        </tr>
+                        <tr class="total">
+                            <th>
+                                <strong>Order Total</strong>
+                            </th>
+                            <td>
+                                <strong><span class="amount" id="totalPrice">Rs.{{total}}</span></strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+
+<script>
+
+    function applyCoupon() {
+        const couponCode = document.getElementById('couponCode').value;
+        fetch('/applyCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ couponCode, cartTotal: {{ total }} })
+  })
+  .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('couponError').textContent = data.error;
+            } else if (data.couponApplied) {
+                document.getElementById('couponError').textContent = '';
+                document.getElementById('totalPrice').textContent = `Total: Rs.${data.totalAfterDiscount}`;
+                
+                Swal.fire({
+						// position: "top-end",
+						icon: "success",
+						title: `Coupon applied! You saved Rs.${data.discount}`,
+						showConfirmButton: false,
+						timer: 1500
+					});
+                document.getElementById("discountamount").innerHTML = data.discount
+                // Show the "Remove Coupon" button
+                document.getElementById('removeCouponButton').classList.remove('hidden');
+                 document.getElementById('applycoupon').style.display = 'none';
+                document.getElementById('removeCouponButton').style.display = 'inline-block';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+    function removeCoupon() {
+        // Clear the coupon code input
+        document.getElementById('couponCode').value = '';
+
+        // Recalculate the total without the coupon
+        fetch('/removeCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cartTotal: {{ total }} })
+  })
+  .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('couponError').textContent = data.error;
+            } else {
+                document.getElementById('couponError').textContent = '';
+                document.getElementById('totalPrice').textContent = `Total: Rs.${data.total}`;
+                document.getElementById('discountamount').textContent = 'Rs 0';
+                 Swal.fire({
+						// position: "top-end",
+						icon: "success",
+						title: `Coupon removed!`,
+						showConfirmButton: false,
+						timer: 1500
+					});
+
+                // Hide the "Remove Coupon" button
+                document.getElementById('removeCouponButton').classList.add('hidden');
+                
+                document.getElementById('applycoupon').style.display = 'inline-block';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+</script>
+
+
+<script>
+    let addressId = '';
+    let payment = '';
+    let amount = document.getElementById("totalPrice").innerHTML
+    console.log(amount + "12345678")
+
+    function addressSelect(id) {
+        addressId = id;
+        console.log(id);
+    }
+
+    function paymentMethod(value) {
+        payment = value;
+        console.log(value);
+    }
+
+    function proceed() {
+        if (addressId === '' || payment === '') {
+            Swal.fire({
+                title: "To Proceed",
+                text: "Select address and payment method",
+                icon: "warning"
+            });
+            return;
+        }
+
+
+        if (payment === 'Online') {
+            // Fetch order details from your server
+            fetch('/create_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ amount: {{ total }} }) // Replace {{total}} with actual amount
+    })
+            .then(response => response.json())
+        .then(order => {
+            // Razorpay payment options
+            const options = {
+                key: 'rzp_test_ClUZxn3BRreTaS', // Replace with your Razorpay key
+                amount: order.total, // Amount in paise
+                currency: "INR",
+                name: "Fresh Mart",
+                description: "Purchase Description",
+                order_id: order.id, // Razorpay order ID
+                handler: function (response) {
+                    // Handle payment success
+                    fetch('/payment_success', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(response)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            window.location.href = `/orderConfirmation?id=${addressId}&payment=${payment}`;
+                        })
+                        .catch(error => console.error('Error:', error));
+                },
+
+                theme: {
+                    color: "#3399cc"
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                console.error(response.error);
+                Swal.fire({
+                    title: "Payment Failed",
+                    text: response.error.description,
+                    icon: "error"
+                });
+            });
+
+            rzp.open();
+        })
+        .catch(error => console.error('Error:', error));
+        } else {
+        // Handle COD option
+        window.location.href = `/orderConfirmation?id=${addressId}&payment=${payment}`;
+    }
+    }
+</script>
+
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add event listener to the form submission
+        document.querySelector('form').addEventListener('submit', function (event) {
+            // Call the validateAddress function and prevent form submission if validation fails
+            if (!validateAddress()) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    function validateAddress() {
+        var errors = false;
+
+        // Get form input values
+        var fullname = document.getElementById('fullname').value;
+        var mobile = document.getElementById('mobile').value;
+        var adname = document.getElementById('adname').value;
+        var city = document.getElementById('city').value;
+        var state = document.getElementById('state').value;
+        var country = document.getElementById('country').value;
+        var pincode = document.getElementById('pincode').value;
+
+        // Get error spans for displaying validation errors
+        var fullnameError = document.getElementById('fullnameError');
+        var mobileError = document.getElementById('mobileError');
+        var adnameError = document.getElementById('adnameError');
+        var cityError = document.getElementById('cityError');
+        var stateError = document.getElementById('stateError');
+        var countryError = document.getElementById('countryError');
+        var pincodeError = document.getElementById('pincodeError');
+
+        // Reset error messages
+        fullnameError.textContent = '';
+        mobileError.textContent = '';
+        adnameError.textContent = '';
+        cityError.textContent = '';
+        stateError.textContent = '';
+        countryError.textContent = '';
+        pincodeError.textContent = '';
+
+        // Regular expressions for validation
+        var mobileRegex = /^\d{10}$/; // 10-digit mobile number
+        var pincodeRegex = /^\d{6}$/; // 6-digit PIN code
+
+        // Perform validation
+        if (!fullname.trim()) {
+            fullnameError.textContent = 'Full name is required.';
+            errors = true;
+        }
+        if (!mobile.trim()) {
+            mobileError.textContent = 'Mobile no is required.';
+            errors = true;
+        } else if (!mobile.match(mobileRegex)) {
+            mobileError.textContent = 'Invalid mobile number.';
+            errors = true;
+        }
+        if (!adname.trim()) {
+            adnameError.textContent = 'House name is required.';
+            errors = true;
+        }
+        if (!city.trim()) {
+            cityError.textContent = 'City is required.';
+            errors = true;
+        }
+        if (!state.trim()) {
+            stateError.textContent = 'State is required.';
+            errors = true;
+        }
+        if (!country.trim()) {
+            countryError.textContent = 'Country is required.';
+            errors = true;
+        }
+        if (!pincode.trim()) {
+            pincodeError.textContent = 'PIN code is required.';
+            errors = true;
+        } else if (!pincode.match(pincodeRegex)) {
+            pincodeError.textContent = 'Invalid PIN code.';
+            errors = true;
+        }
+
+        // Return whether there are any errors
+        return !errors;
+    }
+</script>
+{{> userfooter}}

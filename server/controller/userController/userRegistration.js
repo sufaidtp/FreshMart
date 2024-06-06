@@ -3,6 +3,7 @@ const productDetails = require("../../model/productModel")
 const catDetails = require("../../model/categoryModel")
 const bcrypt = require('bcrypt')
 const sndmail = require("../userController/generateOtp")
+const walletDetails=require("../../model/walletModel")
 
 
 
@@ -123,6 +124,12 @@ const otpVerification = async (req, res) => {
                     })
                     console.log("User added to the database!!!!!!")
                     await userData.save()
+                    const wallet = new walletDetails({
+                        userId: userData._id,
+                        wallet: 0,
+                        history: [],
+                      });
+                      await wallet.save();
                     res.redirect("/login")
                 } else {
                     res.redirect("/register?uname=Time expierd")

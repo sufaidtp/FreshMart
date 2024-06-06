@@ -30,7 +30,17 @@ const userSchema = new mongoose.Schema({
     status: {
         type: Number,
         required: true
-    } 
+    },
+    Order:{
+        type:Object
+        
+    },
+    coupon:{
+        type:Array
+    },
+    wallet:{
+        type:Number
+    }
 
 })
 

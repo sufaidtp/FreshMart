@@ -1,0 +1,72 @@
+{{> userheader}}
+
+
+<!-- Main Content -->
+			<div id="content" class="site-content">
+				<!-- Breadcrumb -->
+				<div id="breadcrumb">
+					<div class="container">
+						<h2 class="title">wishlist</h2>
+						
+						<ul class="breadcrumb">
+							<li><a href="#" title="Home">Home</a></li>
+							<li><span>wishlist</span></li>
+						</ul>
+					</div>
+				</div>
+			
+				<div class="container">
+					<div class="page-cart">
+						<div class="table-responsive">
+							<table class="cart-summary table table-bordered">
+								<thead>
+									<tr>
+										<th class="width-20">&nbsp;</th>
+										<th class="width-80 text-center">Image</th>
+										<th>Name</th>
+										<th class="width-100 text-center">price</th>
+									
+									</tr>
+								</thead>
+								
+								<tbody>
+                                    {{#each wishData}}
+									<tr>
+										<td class="product-remove">
+											<a title="Remove this item" class="remove" href="/delete_wishlist/{{this.product}}">
+												<i class="fa fa-times"></i>
+											</a>
+										</td>
+										<td>
+											<a href="product-detail-left-sidebar.html">
+												<img width="80" alt="Product Image" class="img-responsive" src="{{this.image}}">
+											</a>
+										</td>
+										<td>
+											<a href="product-detail-left-sidebar.html" class="product-name">{{this.product}}</a>
+										</td>
+										<td class="text-center">
+											Rs.{{this.price}}
+										</td>
+									
+									</tr>
+                                    {{/each}}
+									
+									
+								</tbody>
+								
+								
+							</table>
+						</div>
+						
+						{{!-- <div class="checkout-btn">
+							<a href="product-checkout.html" class="btn btn-primary pull-right" title="Proceed to checkout">
+								<span>Proceed to checkout</span>
+								<i class="fa fa-angle-right ml-xs"></i>
+							</a>
+						</div> --}}
+					</div>
+				</div>
+			</div>
+
+            {{> userfooter}}
