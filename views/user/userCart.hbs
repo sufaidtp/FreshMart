@@ -44,14 +44,14 @@
                                 <a href="product-detail-left-sidebar.html" class="product-name">{{this.product}}</a>
                             </td>
                             <td class="text-center">
-                                {{this.price}}
+                                {{this.offerPrice}}
                             </td>
                             <td>
                                 <div class="product-quantity">
                                     <div class="qty">
                                         <div class="input-group">
                                             <input type="text" name="qty" value="{{this.quentity}}" data-min="1"
-                                                data-price="{{this.price}}" data-id="{{this.product}}">
+                                                data-price="{{this.offerPrice}}" data-id="{{this.product}}">
                                             <span class="adjust-qty">
                                                 <span class="adjust-btn plus" data-action="plus"
                                                     data-id="{{this.product}}">+</span>
@@ -63,7 +63,7 @@
                                 </div>
                             </td>
                             <td class="text-center item-total" data-id="{{this.product}}">
-                                {{multiply this.price this.quentity}}
+                                {{multiply this.offerPrice this.quentity}}
                             </td>
                         </tr>
                         {{/each}}

@@ -25,6 +25,7 @@
                     <th scope="col">Paymet</th>
                     {{!-- <th scope="col">Status</th> --}}
                     <th scope="col">More Details</th>
+                    
 
                 </tr>
             </thead>
@@ -33,11 +34,13 @@
                 <tr>
                     <th scope="row">{{this.orderID}}</th>
                     <td>{{formatDate this.date}}</td>
-                    <td>{{this.totalOrderValue}}</td>
+                    <td>{{this.amountPaid}}</td>
                     <td>{{this.paymentMethod}}</td>
                     {{!-- <td>{{this.status}}</td> --}}
                     <td><a href="/orderDetail?id={{this.orderID}}" class="btn btn-success" >View Details</a></td>
-
+                    {{#ifEquals this.status "Delivered Successfully"}}
+                    <td><a href="/invoice?id={{this.orderID}}" class="btn btn-success" >Invoice</a></td>
+                    {{/ifEquals}}
                 </tr>
                 {{/each}}
 

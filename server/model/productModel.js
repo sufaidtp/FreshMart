@@ -58,10 +58,10 @@ const productSchema = new mongoose.Schema({
         // required: true
     },
 
-    // catOffer: {
-    //     type: Number,
+    catOffer: {
+        type: Number,
 
-    // }
+    }
      
 })
 

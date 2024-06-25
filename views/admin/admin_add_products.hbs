@@ -53,7 +53,7 @@
       </div> --}}
       {{!-- <!-- Sidebar Navidation Menus--><span class="heading">Main</span> --}}
       <ul class="list-unstyled">
-        <li><a href="/admin/dashbord"> <i class="icon-home"></i>Dashboard </a></li>
+        <li><a href="/admin/dashboard"> <i class="icon-home"></i>Dashboard </a></li>
         <li class="active"><a href="/admin/products"> <i class="icon-grid"></i>Products </a></li>
         <li><a href="/admin/userDetails"> <i class="fa fa-bar-chart"></i>Users </a></li>
         <li><a href="/admin/category"> <i class="icon-padnote"></i>Category </a></li>
@@ -124,17 +124,17 @@
                   </div>
                   <div class="form-group">
                     <label class="form-control-label">Offer</label>
-                    <input type="number" min="1" placeholder="Price of the product" class="form-control" id="offerValue"
-                      onkeyup="discountPrice()" max="99" name="offer">
+                    <input type="number" min="0" placeholder="Price of the product" class="form-control" id="offerValue"
+                      onkeyup="discountPrice(); proOffer()" max="99" name="offer">
                   </div>
-                  {{!-- <div class="form-group">
-                    <label class="form-control-label ">Discount Price</label>
+                  <div class="form-group">
+                    {{!-- <label class="form-control-label ">Discount Price</label> --}}
                     <div class="input-group mb-3">
                       <span class="input-group-text" id="basic-addon1" style="color: white;">INR</span>
                       <input type="text" class="form-control" placeholder="Username" aria-label="Username"
                         aria-describedby="basic-addon1" readonly id="discountAmount" name="discount">
                     </div>
-                  </div> --}}
+                  </div>
 
                   <div class="form-group">
                     <label class="form-control-label required">Stock</label>

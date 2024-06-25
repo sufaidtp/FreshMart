@@ -40,7 +40,7 @@ const addProduct = async (req, res) => {
     try {
         const files = req.files;
         let filepath = files.map(file => file.path.replace(/\\/g, "/").replace("C:/Users/HP/Desktop/FreshMart project/", "").replace('public/uploads/', ""));
-        const { name, category, description, price, stock, about } = req.body;
+        const { name, category, description, price, stock, about, offer } = req.body;
 
         // Find the ObjectId of the category
         const categoryObject = await categoryDetails.findOne({ name: category });
@@ -49,17 +49,42 @@ const addProduct = async (req, res) => {
             return res.redirect("/admin/products?product=Category not found");
         }
 
-        const product = await productDetails.findOne({ name });
+
+        const product = await productDetails.findOne({ name: name });
+        let data = req.body
+        let amount = price;
+        if (data.offer == "") {
+            const catdata = await categoryDetails.find({ name: category })
+            if (catdata[0].offer == "") {
+                amount = Number(data.discount)
+            } else {
+                let sum = Number(data.price) * Number(catdata[0].offer);
+                let value = sum / 100;
+                amount = Number(data.price) - value;
+            }
+        } else {
+            const catdata = await categoryDetails.find({ name: category })
+            if (catdata[0].offer > data.offer) {
+                let sum = Number(data.price) * Number(catdata[0].offer)
+                let value = sum / 100
+                amount = Number(data.price) - value
+            } else {
+                amount = Number(data.discount)
+            }
+        }
+
 
         if (!product) {
             const productData = new productDetails({
-                name,
+                name: name,
                 category: categoryObject._id, // Assign the ObjectId of the category
-                description,
-                about,
-                price,
-                stock,
+                description: description,
+                about: about,
+                price: price,
+                offer: data.offer,
+                stock: stock,
                 imagePath: filepath,
+                discountAmount: amount
             });
 
             await productData.save();
@@ -83,8 +108,7 @@ const add_products = async (req, res) => {
         const success = req.query.datasuccess
         const dataerror = req.query.dataerror
         const cat = await editCat.find({})
-        console.log(cat)
-        console.log('add_product router enterd')
+        
         res.render("admin_add_products", { success, dataerror, cat })
 
     } catch (e) {
@@ -94,10 +118,10 @@ const add_products = async (req, res) => {
 
 const editproduct = async (req, res) => {
     try {
-        console.log(req.params.id)
+        
         const productData = await productDetails.findOne({ _id: req.params.id })
         const categoryData = await categoryDetails.find({})
-        console.log(productData)
+        
         res.render("admin_edit_product", { productData, categoryData })
     } catch (e) {
         console.log(e, 'error')
@@ -109,8 +133,7 @@ const editproduct = async (req, res) => {
 const edit_product = async (req, res) => {
 
     try {
-        console.log(req.body)
-        console.log('edit_product image check------------------')
+        
         console.log(req.files)
         const files = req.files
         let imagePath = []
@@ -126,29 +149,59 @@ const edit_product = async (req, res) => {
                 )
             }
         }
-        if (req.body) {
-            await productDetails.updateOne({ _id: req.params.id },
+        const catdata = await categoryDetails.find({ _id: req.body.category })
+        
+        let offerPrice
+
+        if (req.body.offer != "") {
+            if (req.body.offer > catdata[0].offer) {
+              let sum = Number(req.body.price) * Number(req.body.offer);
+              let dis = sum / 100;
+              offerPrice = Number(req.body.price) - Math.floor(dis);
+              console.log(req.body.offer, "if");
+            } else {
+              let sum = Number(req.body.price) * Number(catdata[0].offer);
+              let value = sum / 100;
+              offerPrice = Number(req.body.price) - value;
+            }
+          } else {
+            if (catdata[0].offer == "") {
+              console.log("offer is null");
+              offerPrice = Number(req.body.price);
+            } else {
+              console.log("offer is not null");
+              let sum = Number(req.body.price) * Number(catdata[0].offer);
+              let value = sum / 100;
+              offerPrice = Number(req.body.price) - value;
+              console.log(offerPrice, "offferprice - -- -- --");
+            }
+          }
+          console.log(offerPrice,"offerprice");
+          if (offerPrice > 0) {
+            console.log(req.body,'req.body');
+            if (req.body) {
+              const success = await productDetails.updateOne({ _id: req.params.id },
+                
                 {
-                    $set: {
-                        name: req.body.name,
-                        category: req.body.category,
-                        description: req.body.description,
-                        price: req.body.price,
-                        stock: req.body.stock,
-                        // discountAmount: req.body.offerPrice,
-                        // offer:req.body.offer,
-
-
-                    }
+                  $set: {
+                    name:req.body.name,
+                    category:req.body.category,
+                    description:req.body.description,
+                    price:req.body.price,
+                    stock:req.body.stock,
+                    discountAmount:offerPrice,
+                    offer:req.body.offer
+                  },
                 },
                 {
-                    upsert: true
-                })
-            res.redirect("/admin/products")
-        } else {
-            console.log('data not retrived from edit_product route ')
-
-        }
+                  upsert: true,
+                }
+              );
+            
+            }
+          }
+          console.log("PRODUCT UPDATED");
+           res.redirect("/admin/products");
 
     } catch (e) {
         console.log("error with edit product admin", e);
@@ -160,11 +213,8 @@ const edit_product = async (req, res) => {
 const searchProduct = async (req, res) => {
     try {
         const nameSearch = req.body.search
-        console.log(nameSearch);
         const regex = new RegExp(`${nameSearch}`, "i")
-        console.log(regex);
         const products = await productDetails.find({ name: { $regex: regex } })
-        console.log(products)
         res.render('admin_product', { products, nameSearch })
     } catch (e) {
         console.log("error with search product admin", e);
@@ -173,12 +223,9 @@ const searchProduct = async (req, res) => {
 
 const list_product = async (req, res) => {
     try {
-        console.log("hhhh");
-        console.log(req.params.id)
+       
         const productData = await productDetails.findOne({ _id: req.params.id })
-        console.log(productData);
         const data = await productDetails.updateOne({ _id: req.params.id }, { $set: { display: !productData.display } })
-        console.log(data)
         res.redirect("/admin/products")
 
     } catch (e) {
@@ -192,8 +239,6 @@ const deleteImage = async (req, res) => {
     try {
         const productId = req.params.id; // Assuming id is passed in params
         const imageToDelete = req.query.delete;
-        console.log(productId, " img id................................");
-        console.log(imageToDelete)
         await productDetails.updateOne({ _id: productId }, { $pull: { imagePath: imageToDelete } })
         res.redirect(`/admin/edit_product/${productId}`)
 
@@ -216,4 +261,4 @@ const deleteImage = async (req, res) => {
 
 
 
-module.exports = {  productData, addProduct, add_products, editproduct, edit_product, searchProduct, list_product, deleteImage }
+module.exports = { productData, addProduct, add_products, editproduct, edit_product, searchProduct, list_product, deleteImage }

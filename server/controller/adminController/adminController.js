@@ -2,7 +2,7 @@ const userDetails = require("../../model/userModel")
 const bcrypt = require("bcrypt")
 const editCat = require("../../model/categoryModel")
 const productDetails = require("../../model/productModel")
-
+const orderDetails = require("../../model/ordersModel")
 const admin = (req, res) => {
     try {
         if (req.session.isAdmin) {
@@ -28,10 +28,10 @@ const adminDashboard = async (req, res) => {
 
         // const userName = req.body.name;
         const adminFound = await userDetails.findOne({ username: req.body.loginUsername })
-        console.log(adminFound)
+        
         if (adminFound && adminFound.isAdmin == 1) {
             passSuccess = await bcrypt.compare(req.body.loginPassword, adminFound.password)
-            console.log(passSuccess)
+            
             if (passSuccess) {
                 req.session.isAdmin = true
                 // req.session.username = req.body.username
@@ -53,7 +53,87 @@ const adminDashboard = async (req, res) => {
 
 const toDashboard = async (req, res) => {
     try {
-        res.render("dashboard")
+        const userCount = await userDetails.find({ isAdmin: 0 }).count()
+        const productCount = await productDetails.find({}).count()
+        const orders = await orderDetails.distinct("orderID")
+        const orderStatusP = await orderDetails.aggregate([
+            { $unwind: "$products" },
+            { $match: { "products.username": "Placed" } },
+            { $group: { _id: "$products.username", count: { $sum: 1 } } }
+        ]);
+
+        const orderStatusC = await orderDetails.aggregate([
+            { $unwind: "$products" },
+            { $match: { "products.username": "cancelled" } },
+            { $group: { _id: "$products.username", count: { $sum: 1 } } }
+        ]);
+        const orderStatusD = await orderDetails.aggregate([
+            { $unwind: "$products" },
+            { $match: { "products.username": "Delivered Successfully" } },
+            { $group: { _id: "$products.username", count: { $sum: 1 } } }
+        ]);
+        const orderStatusO = await orderDetails.aggregate([
+            { $unwind: "$products" },
+            { $match: { "products.username": "Out for delivery" } },
+            { $group: { _id: "$products.username", count: { $sum: 1 } } }
+        ]);
+        let codPay = await orderDetails.find({}).count()
+        const online = await orderDetails.find({ paymentMethod: 'Online' }).count()
+        const wallet = await orderDetails.find({ paymentMethod: 'wallet' }).count()
+        codPay = codPay - online
+        const orderCount = orders.length
+        const totalRevenueResult = await orderDetails.aggregate([
+            {
+                $unwind: "$products",
+            },
+            {
+                $match: {
+                    "products.username": "Delivered Successfully"
+                },
+            },
+            {
+                $project: {
+                    amount: {
+                        $multiply: [
+                            { $toDouble: "$products.quentity" },
+                            { $toDouble: "$products.offerPrice" }
+                        ]
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: "$amount" },
+                },
+            },
+        ]);
+
+
+        const totalRevenue = totalRevenueResult.length > 0 ? totalRevenueResult[0].totalRevenue : 0;
+
+        
+        const product = await orderDetails.aggregate([
+            {
+                $unwind: "$products",
+            },
+            {
+                $group: {
+                    _id: "$products.product",
+                    totalOrderValue: { $sum: 1 },
+                },
+            },
+            {
+                $sort: { totalOrderValue: -1 }
+            },
+            {
+                $limit: 4,
+            }
+        ])
+
+
+        
+        res.render("dashboard", { userCount, productCount, orderCount, orderStatusP, orderStatusC, orderStatusD, orderStatusO, codPay, online, wallet, totalRevenue, product })
     } catch (e) {
         console.log("problem with toDashboard" + e)
 
@@ -61,6 +141,109 @@ const toDashboard = async (req, res) => {
 }
 
 
+
+const chartData = async (req, res) => {
+    try {
+        console.log('/chart-data calle')
+        const Aggregation = await orderDetails.aggregate([
+            {
+                $match: {
+                    date: { $exists: true }
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                        day: { $dayOfMonth: "$date" }
+                    },
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $sort: {
+                    "_id.year": 1,
+                    "_id.month": 1,
+                    "_id.day": 1
+                }
+            }
+        ]);
+        
+        res.json(Aggregation);
+    } catch (e) {
+
+        console.log("error with chartData" + e)
+        // res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+}
+
+const chartDataMonth = async (req, res) => {
+    try {
+        
+        const Aggregation = await orderDetails.aggregate([
+            {
+                $match: {
+                    date: { $exists: true }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$date" },
+                        month: { $month: "$date" },
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: {
+                    "_id.year": 1,
+                    "_id.month": 1,
+                }
+            }
+        ]);
+        
+        res.json(Aggregation);
+    } catch (error) {
+
+        console.error(error);
+        // res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+const chartDataYear = async (req, res) => {
+    try {
+        
+        const Aggregation = await orderDetails.aggregate([
+            {
+                $match: {
+                    date: { $exists: true }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$date" },
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: {
+                    "_id.year": 1,
+                }
+            }
+        ]);
+        
+        res.json(Aggregation);
+    } catch (error) {
+
+        console.error(error);
+        // res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 const logout = async (req, res) => {
     try {
         await req.session.destroy()
@@ -75,7 +258,6 @@ const logout = async (req, res) => {
 const user = async (req, res) => {
     try {
         const userData = await userDetails.find({ isAdmin: 0 }).sort({ "_id": -1 })
-        console.log(userData);
         res.render("adminUserdetails", { userData })
 
     } catch (e) {
@@ -106,7 +288,7 @@ const block = async (req, res) => {
 
             val = 0
         await userDetails.updateOne({ username: name }, { $set: { status: val } })
-        
+
         res.redirect("/admin/userDetails")
 
     } catch (e) {
@@ -119,7 +301,7 @@ const list = async (req, res) => {
     try {
         const name = req.params.id
         const productData = await editCat.findOne({ name: name })
-        console.log(productData);
+        
         let val = 1
         if (productData.list == 1)
             val = 0
@@ -135,4 +317,4 @@ const list = async (req, res) => {
 }
 
 
-module.exports = { admin, adminDashboard, toDashboard, logout, user, searchUser, block, list }
+module.exports = { admin, adminDashboard, toDashboard, logout, user, searchUser, block, list, chartData, chartDataMonth, chartDataYear }

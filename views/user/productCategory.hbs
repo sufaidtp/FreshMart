@@ -1,5 +1,35 @@
 {{> userheader}}
 <!-- Main Content -->
+<style>
+	.src-style {
+		border: 1px solid rgb(255, 255, 255);
+
+	}
+
+	.form-searchs {
+
+		border-radius: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+		border-radius: 20px;
+		border: 1px solid #cacaca;
+		height: 34px;
+		width: 200px;
+	}
+
+	.src-img {
+		width: 18px;
+		opacity: 40%;
+	}
+
+	.btn-new {
+		border: none;
+		background: #fff;
+	}
+</style>
+
+
 <div id="content" class="site-content">
 	<!-- Breadcrumb -->
 	<div id="breadcrumb">
@@ -39,29 +69,38 @@
 
 							<div class="col-md-6 col-xs-6">
 								<div class="filter-bar">
-									<form action="#" class="pull-right">
+									<div class="pull-right">
 										<div class="select">
-											<select class="form-control">
+											<select class="form-control" id="category" name="category" form="category"
+												onchange="redirectToSort()">
 												<option value="">Sort By</option>
-												<option value="1">Price: Lowest first</option>
-												<option value="2">Price: Highest first</option>
-												<option value="3">Product Name: A to Z</option>
-												<option value="4">Product Name: Z to A</option>
-												<option value="5">In stock</option>
+												<option value="A - Z">A - Z</option>
+												<option value="Z - A">Z - A</option>
+												<option value="1-10">Price: Low to High</option>
+												<option value="10-1">Price: High to Low</option>
+												<!-- <option value="5">In stock</option> -->
 											</select>
 										</div>
-									</form>
-									
-										<div class="select">
-											<div class="pull-right">
-												<form action="/searchProduct" method="post">
-													<input type="text" class="form-input" placeholder="Search" name="productSearch"
-													value="{{productSearch}}">
-													<button type="submit" class="fa fa-search"></button>
-												</form>
-											</div>
+									</div>
+
+									<div class="select">
+										<div class="pull-right">
+
+											<form action="/searchProduct" method="post">
+												<div class="form-searchs">
+													<input type="text" class="form-input src-style" placeholder="Search"
+														name="productSearch" value="{{productSearch}}">
+													<button type="submit" class="btn-new">
+														<img class="src-img"
+															src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGRF6UCc17I4KOC5ShHwlQu80JqFdaKfNaWA&s"
+															alt="">
+													</button>
+												</div>
+											</form>
+
 										</div>
-									
+									</div>
+
 								</div>
 							</div>
 						</div>
@@ -100,20 +139,20 @@
 											</div>
 
 											<div class="product-price">
-												<span class="sale-price">Rs.{{this.price}}</span>
-												{{!-- <span class="base-price">$90.00</span> --}}
+												<span class="sale-price">Rs.{{this.discountAmount}}</span>
+												<span class="base-price">Rs.{{this.price}}</span>
 											</div>
 
 											<div class="product-buttons">
-												<a class="add-to-cart" href="#">
+												<a class="add-to-cart" onclick="addToCart('{{this._id}}')">
 													<i class="fa fa-shopping-basket" aria-hidden="true"></i>
 												</a>
 
-												<a class="add-wishlist" href="#">
+												<a class="add-wishlist" href="/wishlist/{{this._id}}">
 													<i class="fa fa-heart" aria-hidden="true"></i>
 												</a>
 
-												<a class="quickview" href="#">
+												<a class="quickview" href="/productDetails/{{this._id}}">
 													<i class="fa fa-eye" aria-hidden="true"></i>
 												</a>
 											</div>
@@ -178,7 +217,7 @@
 														<span>Add To Cart</span>
 													</a>
 
-													<a class="add-wishlist" href="#">
+													<a class="add-wishlist" href="">
 														<i class="fa fa-heart" aria-hidden="true"></i>
 													</a>
 
@@ -221,5 +260,87 @@
 		</div>
 	</div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+	function redirectToSort() {
+		const selectedValue =
+			document.getElementById("category").value;
+		if (selectedValue === "A - Z") {
+			window.location.href = "/Ucategory/sort/1"; // Redirect to A -Z sorting page
+		} else if (selectedValue === "Z - A") {
+			window.location.href = "/Ucategory/sort/2"; // Redirect to Z - A sorting page
+		} else if (selectedValue === "1-10") {
+			window.location.href = "/Ucategory/sort/3"; // Redirect to Price: Low to High sorting page
+		} else if (selectedValue === "10-1") {
+			window.location.href = "/Ucategory/sort/4"; // Redirect to Price: High to Low sorting page
+		} else {
+			// No sorting selected, do nothing
+			console.log("dropdown pressed");
+		}
+
+	}
+</script>
+<script>
+	function addToCart(id) {
+		console.log('addToCart clicked');
+		console.log(id);
+
+		// Stringify the id once
+		const data = JSON.stringify({ id: id });
+		console.log(data);
+
+		fetch('/addtoCart', {
+			body: data,
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json' // Specify the content type
+			}
+		})
+			.then(response => {
+
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json();
+
+
+			}).then(data => {
+				// Handle the response as needed
+				console.log('Response received:', data);
+				console.log(data.success)
+				if (data.success) {
+					Swal.fire({
+						// position: "top-end",
+						icon: "success",
+						title: "Product add to Cart",
+						showConfirmButton: false,
+						timer: 1500
+					});
+
+				} else {
+					Swal.fire({
+						title: "You are Not Loged in",
+						text: "Do you want go Login. Press Login!",
+						icon: "warning",
+						showCancelButton: true,
+						confirmButtonColor: "#3085d6",
+						cancelButtonColor: "#d33",
+						confirmButtonText: "Login!"
+					}).then((result) => {
+						if (result.isConfirmed) {
+							window.location.href = '/login';
+						}
+					});
+
+
+				}
+			})
+			.catch(error => {
+				// Handle any errors
+				console.error('Error occurred:', error);
+			});
+	}
+
+</script>
 
 {{> userfooter}}

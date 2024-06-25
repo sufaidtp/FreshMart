@@ -10,7 +10,7 @@ const orderController = require("../controller/userController/orderController")
 const { search } = require("./adminroute")
 router.get("/", userController.home)
 router.get("/home", userController.home)
-
+router.get("/errorPage",userController.errorPage)
 
 router.get("/login", userController.login)
 router.post("/login", userController.validateUser)
@@ -87,6 +87,7 @@ router.post("/createAddress", isUser.isUser, cartController.createAddress)
 router.get('/orderConfirmation', isUser.isUser, orderController.orderConfirmation)
 router.get('/orderPlaced', isUser.isUser, orderController.orderPlaced)
 router.get('/orders', isUser.isUser, orderController.orderHistory)
+router.get("/invoice",isUser.isUser,orderController.invoice)
 router.get('/orderDetail', isUser.isUser, orderController.orderDetail)
 router.get("/orderCancel", isUser.isUser, orderController.cancelOrder)
 router.post('/create_order', isUser.isUser, orderController.createOrder)
@@ -98,11 +99,12 @@ router.post("/removeCoupon", isUser.isUser, orderController.removeCoupon)
 router.post('/updateOrderReason', isUser.isUser, orderController.orderReason)
 
 // walllet
+router.post("/walletpay",isUser.isUser,orderController.walletPay)
 router.get("/wallet",isUser.isUser,orderController.walletView)
 
 // search
-router.post("/searchProduct",isUser.isUser,product.searchProduct)
-
+router.post("/searchProduct",product.searchProduct)
+router.get("/Ucategory/sort/:number",product.categoryProductSort)
 
 
 

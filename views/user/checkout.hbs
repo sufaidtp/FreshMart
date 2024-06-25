@@ -166,13 +166,13 @@
                                                     class="product-name">{{this.product}}</a>
                                             </td>
                                             <td class="text-center">
-                                                {{this.price}}
+                                                {{this.offerPrice}}
                                             </td>
                                             <td class="text-center">
                                                 {{this.quentity}}
                                             </td>
                                             <td class="text-center">
-                                                {{multiply this.price this.quentity}}
+                                                {{multiply this.offerPrice this.quentity}}
                                             </td>
                                         </tr>
 
@@ -187,7 +187,8 @@
                                     <div class="form-group">
                                         <label for="couponCode">Coupon Code: </label>
                                         <input type="text" id="couponCode" class="form-control" name="couponCode">
-                                        <button type="button" id="applycoupon" class="btn btn-primary" onclick="applyCoupon()">Apply
+                                        <button type="button" id="applycoupon" class="btn btn-primary"
+                                            onclick="applyCoupon()">Apply
                                             Coupon</button>
                                         <button type="button" id="removeCouponButton" class="btn btn-danger hidden"
                                             onclick="removeCoupon()">Remove Coupon</button>
@@ -199,10 +200,16 @@
                                 <form action="#" method="post">
                                     <div class="item">
                                         <input name="name" type="radio" onclick="paymentMethod('COD')">COD
+                                        (cash On Delivery)
                                     </div>
                                     <div class="item">
                                         <input name="name" type="radio" onclick="paymentMethod('Online')">Online
                                         Payment
+                                    </div>
+                                    
+                                    <div class="item">
+                                        <input name="name" type="radio" onclick="paymentMethod('wallet')">
+                                        Wallet 
                                     </div>
                                 </form>
                             </div>
@@ -252,7 +259,7 @@
                                 <strong>Order Total</strong>
                             </th>
                             <td>
-                                <strong><span class="amount" id="totalPrice">Rs.{{total}}</span></strong>
+                                <strong><span class="amount" id="totalPrice">{{total}}</span></strong>
                             </td>
                         </tr>
                     </tbody>
@@ -285,19 +292,19 @@
                 document.getElementById('couponError').textContent = data.error;
             } else if (data.couponApplied) {
                 document.getElementById('couponError').textContent = '';
-                document.getElementById('totalPrice').textContent = `Total: Rs.${data.totalAfterDiscount}`;
-                
+                document.getElementById('totalPrice').textContent = `Total: .${data.totalAfterDiscount}`;
+
                 Swal.fire({
-						// position: "top-end",
-						icon: "success",
-						title: `Coupon applied! You saved Rs.${data.discount}`,
-						showConfirmButton: false,
-						timer: 1500
-					});
+                    // position: "top-end",
+                    icon: "success",
+                    title: `Coupon applied! You saved Rs.${data.discount}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 document.getElementById("discountamount").innerHTML = data.discount
                 // Show the "Remove Coupon" button
                 document.getElementById('removeCouponButton').classList.remove('hidden');
-                 document.getElementById('applycoupon').style.display = 'none';
+                document.getElementById('applycoupon').style.display = 'none';
                 document.getElementById('removeCouponButton').style.display = 'inline-block';
             }
         })
@@ -321,19 +328,19 @@
                 document.getElementById('couponError').textContent = data.error;
             } else {
                 document.getElementById('couponError').textContent = '';
-                document.getElementById('totalPrice').textContent = `Total: Rs.${data.total}`;
+                document.getElementById('totalPrice').textContent = `Total: ${data.total}`;
                 document.getElementById('discountamount').textContent = 'Rs 0';
-                 Swal.fire({
-						// position: "top-end",
-						icon: "success",
-						title: `Coupon removed!`,
-						showConfirmButton: false,
-						timer: 1500
-					});
+                Swal.fire({
+                    // position: "top-end",
+                    icon: "success",
+                    title: `Coupon removed!`,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
 
                 // Hide the "Remove Coupon" button
                 document.getElementById('removeCouponButton').classList.add('hidden');
-                
+
                 document.getElementById('applycoupon').style.display = 'inline-block';
             }
         })
@@ -356,10 +363,16 @@
     function paymentMethod(value) {
         payment = value;
         console.log(value);
+
     }
 
     function proceed() {
+
+
+
+        console.log(addressId)
         if (addressId === '' || payment === '') {
+
             Swal.fire({
                 title: "To Proceed",
                 text: "Select address and payment method",
@@ -367,16 +380,51 @@
             });
             return;
         }
+        else if (payment === 'COD' && amount > 1000) {
 
-
-        if (payment === 'Online') {
-            // Fetch order details from your server
-            fetch('/create_order', {
+            Swal.fire({
+                title: "COD Not Allowed",
+                text: "Cash on Delivery is not available for orders above Rs 1000. Please choose another payment method.",
+                icon: "error"
+            });
+            return;
+        }
+        else if (payment === 'wallet') {
+            // Make a Fetch API call to verify wallet balance and process the payment
+            fetch('/walletpay', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ amount: {{ total }} }) // Replace {{total}} with actual amount
+                body: JSON.stringify({ total: {{ total }} })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+               
+                window.location.href = `/orderConfirmation?id=${addressId}&payment=${payment}`;
+            } else {
+                Swal.fire({
+                    title: data.message,
+                    text: "You do not have enough balance in your wallet to complete this purchase.",
+                    icon: "warning"
+                });
+            return
+            }
+        })
+        .catch(error => {
+            alert('An error occurred: ' + error.message);
+        });
+        }
+
+    else if (payment === 'Online') {
+        // Fetch order details from your server
+        fetch('/create_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount: {{ total }} }) // Replace {{total}} with actual amount
     })
             .then(response => response.json())
         .then(order => {

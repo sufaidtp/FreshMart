@@ -27,11 +27,11 @@ const listCategory = async (req, res) => {
 
 const save_category = async (req, res) => {
     try {
-        console.log(req.body.category);
+        
 
         // Finding category by name ignoring case
         const categoryFound = await editCat.find({ name: { $regex: new RegExp(req.body.category, "i") } })
-        console.log(categoryFound);
+        
         if (categoryFound.length > 0) {
             res.redirect("/admin/category?err=Category already exists")
         } else {
@@ -40,6 +40,8 @@ const save_category = async (req, res) => {
                 const catData = new editCat({
                     name: req.body.category,
                     list: 0,
+                    offer: req.body.offer
+
                 })
                 // Saving the new category document
                 await catData.save()
@@ -56,43 +58,48 @@ const save_category = async (req, res) => {
 const edit_category = async (req, res) => {
     try {
 
-        console.log(req.params.id, '/././././././/')
-        console.log(req.body.name);
+       
+        const { name, oldname, offer } = req.body
 
-        const categoryData = await editCat.find({ name: req.body.name });
-        if ((categoryData.length == 0) || (categoryData[0].name == req.body.oldname)) {
-            console.log('data less than one')
-            await editCat.updateOne({ _id: req.params.id }, { $set: { name: req.body.name, offer: req.body.offer } }, { upsert: true })
+        const categoryData = await editCat.find({
+            name: { $regex: new RegExp(`^${name}`, "i") },
+        });
+
+        if ((categoryData.length == 0) || (categoryData[0].name == oldname)) {
+
+            await editCat.updateOne({ _id: req.params.id },
+                { $set: { name, offer } },
+                { upsert: true })
+
+            // Update product details based on category changes
+            const productData = await productDetails.find({ category: req.params.id })
+
+            for (let i = 0; i < productData.length; i++) {
+                let discountAmount;
+
+                if (offer !== "") {
+                    // Calculate discountAmount based on offer
+                    const sum = productData[i].price * offer
+                    const value = sum / 100
+
+                    discountAmount = productData[i].price - value
+
+                } else {
+                    discountAmount = productData[i].price
+                }
+
+                // Update product details with discountAmount
+                await productDetails.updateMany(
+                    { name: productData[i].name },
+                    { $set: { discountAmount } },
+                    { upsert: true }
+
+                )
+            }
             res.redirect('/admin/category?err=Category updated successfully')
         } else {
             res.redirect('/admin/category?err=Category already exits')
         }
-       
-        //         const productData = await productDetails.find({ category: req.params.id })
-        //         for (let i = 0; i < productData.length; i++) {
-
-        //     let discountAmount;
-
-        //     if (offer !== "") {
-        //       // Calculate discountAmount based on offer
-        //       const sum = productData[i].rate * offer;
-        //       const value = sum / 100;
-        //       discountAmount = productData[i].rate - value;
-        //     } else {
-        //       discountAmount = productData[i].rate;
-        //     }
-
-        //     // Update product details with discountAmount
-        //     await productDetails.updateMany(
-        //       { name: productData[i].name },
-        //       { $set: { discountAmount } },
-        //       { upsert: true }
-        //     );
-        //   }
-
-
-       
-
 
     } catch (e) {
         console.log("error in the  edit_category categorycontroller in admin side : " + e)

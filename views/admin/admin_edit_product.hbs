@@ -120,6 +120,13 @@
                                             placeholder="Price of the product" class="form-control" name="price">
                                     </div>
                                     <div class="form-group">
+                                        <p id="offer-error"></p>
+                                        <label for="username" >Offer</label>
+                                        <input type="number" min="0" onkeyup="proOffer()" placeholder="Product offer"
+                                            value={{productData.offer}} class="form-control" id="offerValue"
+                                            max="99" name="offer">
+                                    </div>
+                                    <div class="form-group">
                                         <label class="form-control-label">Stock</label>
                                         <input value={{productData.stock}} type="number"
                                             placeholder="Quantity of the product" class="form-control" name="stock">
@@ -171,6 +178,25 @@
             const success = document.getElementById('uploadstatus')
             success.style.display = 'none';
         }, 4000)
+    </script>
+    <script>
+           function proOffer()
+     {
+       var offerprice = document.getElementById('offerValue').value;
+       if(offerprice=="")
+       {
+         proError.innerHTML= '<p class="help-block text-danger"> Please Enter the offer';
+         return false;
+       }
+       if(offerprice<0)
+       {
+         proError.innerHTML= '<p class="help-block text-danger"> Invalid Offer Value! Please Enter a Positive Number';
+         return false;
+       }
+         proError.innerHTML="";
+         return true;
+     
+     }
     </script>
 
     <!-- JavaScript files-->

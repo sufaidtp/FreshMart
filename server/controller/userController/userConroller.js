@@ -6,24 +6,31 @@ const catDetails = require("../../model/categoryModel")
 const productModel = require("../../model/productModel")
 const passport = require("passport")
 const { googleSignIn } = require("../../../googleAuth")
+const cartDetails = require("../../model/cartModel")
 
 
 
 
 const home = async (req, res) => {
     try {
-        const productData = await productModel.find({ display: true, list:0})
-        const Category=await catDetails.find({list:0})
-        console.log(productData)
-        console.log(Category);
+        const cartData = await cartDetails.find({ username: req.session.userName })
+        const cartCount = cartData.length;
+        const productData = await productModel.find({ display: true, list: 0 })
+        const Category = await catDetails.find({ list: 0 })
+
+
         userIn = req.session.userName;
-        res.render("home", { productData ,Category , userIn})
+        res.render("home", { productData, Category, userIn, cartData, cartCount })
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the home usercontroller in user side : " + e)
     }
 }
 
+const errorPage = async (req, res) => {
+    res.render("error")
+}
 
 const checkUser = async (req, res, next) => {
     try {
@@ -44,6 +51,7 @@ const checkUser = async (req, res, next) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the checkUser usercontroller in user side : " + e);
     }
 }
@@ -56,12 +64,13 @@ const login = async (req, res) => {
             const block = req.query.block
             const username = req.query.username
             const pass = req.query.pass
-            
 
 
-            res.render("login", { block, username, pass  })
+
+            res.render("login", { block, username, pass })
         }
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the login usercontroller in user side : " + e);
     }
 }
@@ -70,16 +79,14 @@ const login = async (req, res) => {
 const validateUser = async (req, res) => {
 
     try {
-        console.log("hai")
-        console.log(req.body)
+        
+        
         const userLogin = await userDetails.findOne({ username: req.body.username })
         console.log(userLogin)
 
         if (userLogin) {
             if (userLogin.status == 0) {
-                console.log(req.body.username)
-                console.log(req.body.password)
-                console.log(userLogin.password)
+                
                 const data = await bcrypt.compare(req.body.password, userLogin.password)
                 console.log(data);
                 if (data) {
@@ -99,6 +106,7 @@ const validateUser = async (req, res) => {
 
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the validateUser usercontroller in user side : " + e);
     }
 }
@@ -112,6 +120,7 @@ const signout = async (req, res) => {
         res.redirect("/")
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the signout usercontroller in user side : " + e);
     }
 }
@@ -129,6 +138,7 @@ const reset_password = async (req, res) => {
 
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the reset_password usercontroller in user side : " + e);
     }
 }
@@ -150,4 +160,4 @@ const authFailure = (req, res) => {
 };
 
 
-module.exports = { home, login, validateUser, signout, reset_password, checkUser, google, googleCallback, authFailure }
+module.exports = { home, login, validateUser, signout, reset_password, checkUser, google, googleCallback, authFailure, errorPage }

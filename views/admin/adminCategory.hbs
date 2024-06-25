@@ -51,7 +51,7 @@
         <li><a href="/admin/userDetails"> <i class="fa fa-bar-chart"></i>Users </a></li>
         <li class="active"><a href="/admin/category"> <i class="icon-padnote"></i>Category </a></li>
         <li><a href="/admin/orderHistory"> <i class="icon-padnote"></i>Orders </a></li>
-        <li><a href="#"> <i class="icon-padnote"></i>Coupon </a></li>
+        <li><a href="/admin/coupon"> <i class="icon-padnote"></i>Coupon </a></li>
         {{!-- <li><a href="/admin/offers"> <i class="icon-padnote"></i>Offers </a></li> --}}
       </ul>
     </nav>
@@ -84,12 +84,13 @@
                 <div class="modal-body">
                   <div class="form-group">
                     <label for="">Enter </label>
-                    <input type="text" placeholder="Enter the name" name="category" class="form-control">
+                    <input type="text" placeholder="Enter the name" name="category" class="form-control" required>
                   </div>
-                  {{!-- <div class="form-group">
+                  <div class="form-group">
+                    <p id="cat-offer-error"></p>
                     <label for="">offer </label>
-                    <input type="text" placeholder="Enter the offer percentage" name="offer" class="form-control">
-                  </div> --}}
+                    <input type="number" min="0" max="99" placeholder="Enter the offer percentage" name="offer" onkeyup="categoryOffer()" id="catoffer" class="form-control">
+                  </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -162,8 +163,9 @@
                               <input type="text" value="{{this.name}}" class="form-control" name="oldname" hidden>
                             </div>
                             <div class="form-group">
+                              <p id="editcat-offer-error"></p>
                               <label class="form-control-label">offer</label>
-                              <input type="text" value="{{this.offer}}" class="form-control" name="offer">
+                              <input type="number" min="0" max="99" value="{{this.offer}}" class="form-control" onkeyup="editCategoryOffer()"  id="ecatoffer" name="offer">
                             </div>
                           </div>
                           <div class="modal-footer">
@@ -178,9 +180,9 @@
                 </td>
                 <td>
                   {{#if this.offer}}
-                  <button class="btn btn-success" disabled >Applied</button>
+                  <button class="btn btn-success"  >Applied</button>
                   {{else}}
-                  <button class="btn btn-danger" disabled >No offers</button>
+                  <button class="btn btn-danger"  > offers</button>
                   {{/if}}
                 </td>
                 {{!-- <td><a href="/admin/deletecat/{{this.name}}" class="btn btn-danger"
@@ -204,6 +206,47 @@
       value.style.display = " none"
     }, 5000)
 
+  </script>
+  <script>
+    var catofferError = document.getElementById('cat-offer-error');
+    function categoryOffer()
+      {
+        var catoffer = document.getElementById('catoffer').value;
+        if(catoffer=="")
+        {
+          catofferError.innerHTML= '<p class="help-block text-danger"> Please Enter the offer';
+          return false;
+        }
+        if(catoffer<0)
+        {
+          catofferError.innerHTML= '<p class="help-block text-danger"> Invalid Offer Value! Please Enter a Positive Number';
+          return false;
+        }
+        catofferError.innerHTML="";
+          return true;
+      
+      }
+  </script>
+  <script>
+    var ecatofferError = document.getElementById('editcat-offer-error');
+    
+      function editCategoryOffer()
+      {
+        var ecatoffer = document.getElementById('ecatoffer').value;
+        if(ecatoffer=="")
+        {
+          ecatofferError.innerHTML= '<p class="help-block text-danger"> Please Enter the offer';
+          return false;
+        }
+        if(ecatoffer<0)
+        {
+          ecatofferError.innerHTML= '<p class="help-block text-danger"> Invalid Offer Value! Please Enter a Positive Number';
+          return false;
+        }
+        ecatofferError.innerHTML="";
+          return true;
+      
+      }
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">

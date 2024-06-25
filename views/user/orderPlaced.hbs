@@ -10,19 +10,6 @@
 
     body {
         background-color: #f4f4f4;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 800px;
-        padding: 20px;
-        background-color: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
     }
 
     .order-confirmation {
@@ -92,12 +79,14 @@
                     <strong>Products:</strong>
                     <ul id="productList">
                         {{#each data.products}}
-                        <li>{{this.product}} - Rs.{{this.price}} -  Quantity {{this.quentity}}</li>
+                        <li>{{this.product}} - Rs.{{this.offerPrice}} - Quantity {{this.quentity}}</li>
                         {{/each}}
                     </ul>
                 </div>
                 <p><strong>Total Order Value:</strong> <span id="totalOrderValue">{{data.totalOrderValue}}</span></p>
-                <p><strong>Discount:</strong> <span id="totalOrderValue">{{data.discount}}</span></p>
+                <p><strong>Coupon Discount:</strong> <span id="totalOrderValue">{{data.discount}}</span></p>
+                <p><strong>Amount Paid:</strong> <span id="totalOrderValue">{{data.amountPaid}}</span></p>
+
                 <div class="address">
                     <strong>Address:</strong>
                     <p id="userAddress">
@@ -107,17 +96,15 @@
                     </p>
                 </div>
                 <p><strong>Payment Method:</strong> <span id="paymentMethod">{{data.paymentMethod}}</span></p>
-                <p><strong>Status:</strong> <span id="orderStatus" style="color: green; font-weight: bold;">Placed</span></p>
+                <p><strong>Status:</strong> <span id="orderStatus"
+                        class="text-success font-weight-bold">Placed</span></p>
             </div>
         </div>
 
-        <a href="/" class="btn btn-success" style="margin-left: 40%;">Continue Shopping</a>
+        <div class="text-center">
+            <a href="/" class="btn btn-success">Continue Shopping</a>
+        </div>
     </div>
-
-
 </div>
+
 {{> userfooter}}
-
-
-
-

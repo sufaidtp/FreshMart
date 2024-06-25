@@ -10,7 +10,7 @@ const sharp = require("sharp")
 const session = require("express-session")
 const addressPro = require("../../model/userAddressmodel")
 const orderDetails = require("../../model/ordersModel")
-const couponDetails=require("../../model/couponmodel")
+const couponDetails = require("../../model/couponmodel")
 require("dotenv").config()
 
 
@@ -19,10 +19,11 @@ const viewWish = async (req, res) => {
         const userIn = req.session.userName
         const Category = await catDetails.find({ list: 0 })
         const wishData = await wishDetails.find({ username: req.session.userName })
-        console.log(wishData);
+
         res.render("userWishlist", { userIn, Category, wishData })
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with viewwishlist post method" + e);
     }
 }
@@ -32,7 +33,7 @@ const addWishlist = async (req, res) => {
 
         const wishPro = await productDetails.findOne({ _id: req.params.id })
         const wishDataFound = await wishDetails.findOne({ username: req.session.userName, product: wishPro.name })
-        console.log(wishDataFound + "zzzz");
+
 
 
         if (!wishDataFound) {
@@ -40,17 +41,18 @@ const addWishlist = async (req, res) => {
                 username: req.session.userName,
                 product: wishPro.name,
                 image: wishPro.imagePath[0],
-                price: wishPro.price
+                price: wishPro.discountAmount
             })
 
             await wishData.save()
-            console.log('----------------')
+
         }
         res.redirect("/wishlist")
 
 
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with addWishlist" + e);
     }
 }
@@ -60,9 +62,10 @@ const removeWishlist = async (req, res) => {
     try {
         proName = req.params.id
         await wishDetails.deleteOne({ product: proName })
-        console.log(proName + "yyy");
+
         res.redirect("/wishlist")
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with remove wishlist" + e);
     }
 }
@@ -72,37 +75,49 @@ const userCart = async (req, res) => {
         const userIn = req.session.userName
         const Category = await catDetails.find({ list: 0 })
         const cartData = await cartDetails.find({ username: req.session.userName }).sort({ "_id": -1 })
-        console.log(cartData);
+
         res.render("usercart", { userIn, Category, cartData })
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with useCart" + e);
     }
 }
 
 const addtoCart = async (req, res) => {
     try {
-        console.log(req.session.userName, '.././/././//')
+
         var msg
         if (req.session.userName) {
 
-            console.log("function worked");
-            console.log(req.body);
+
+
             const productData = await productDetails.findOne({ _id: req.body.id })
-            console.log(productData + "@@@@@@");
             const cartDataFound = await cartDetails.findOne({ username: req.session.userName, product: productData.name })
-            console.log(cartDataFound, "===========");
+            const currentStock = productData.stock
+            if (currentStock < 1 || cartDataFound && cartDataFound.quentity >= productData.stock) {
+                msg = "Out Of Stock"
+                res.setHeader('Content-Type', 'application/json'); // Set the content type header
+                res.json({ success: true, message: msg });
+                return
+
+            }
+
+
+            // console.log(cartDataFound, "===========");
             if (!cartDataFound) {
                 const CartData = new cartDetails({
                     username: req.session.userName,
                     product: productData.name,
                     image: productData.imagePath[0],
                     price: productData.price,
-                    quentity: 1
+                    quentity: 1,
+                    offerPrice: productData.discountAmount,
+                    offer: productData.offer
+
                 })
 
                 await CartData.save()
-                console.log("--------");
 
             } else {
                 if (cartDataFound.quentity < 5) {
@@ -112,7 +127,7 @@ const addtoCart = async (req, res) => {
                     )
 
                 } else {
-                    msg = 'Quantity cannot exceed 5!'
+                    msg = 'limit exceed !'
                 }
 
             }
@@ -125,6 +140,7 @@ const addtoCart = async (req, res) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with addtoCart" + e);
     }
 }
@@ -137,6 +153,7 @@ const deletecart = async (req, res) => {
         res.redirect("/userCart")
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with deleteCart" + e);
     }
 }
@@ -148,6 +165,7 @@ const about = async (req, res) => {
         const Category = await catDetails.find({ list: 0 })
         res.render("about", { userIn, Category })
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with about page");
     }
 }
@@ -158,6 +176,7 @@ const contact = async (req, res) => {
         const Category = await catDetails.find({ list: 0 })
         res.render("contact", { userIn, Category })
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with about page");
     }
 }
@@ -166,12 +185,11 @@ const updateQuantity = async (req, res) => {
     try {
         const productId = req.params.id;
         const newQuantity = req.body.quantity;
-        console.log(productId);
-        console.log(newQuantity);
+
 
         // Update quantity using findByIdAndUpdate
         const updatedProduct = await cartDetails.updateOne({ username: req.session.userName, product: productId }, { quentity: newQuantity });
-        console.log(updatedProduct + "********");
+
         if (!updatedProduct) {
             // If no product found with the given ID
             return res.status(404).send('Product not found');
@@ -180,6 +198,7 @@ const updateQuantity = async (req, res) => {
         // Send success response
         res.status(200).send('Quantity updated successfully');
     } catch (e) {
+        res.redirect("/errorPage")
         // Handle error
         console.error('Error updating quantity:', e);
 
@@ -201,7 +220,7 @@ const checkOut = async (req, res) => {
         let total = 0;
         for (let i = 0; i < cartData.length; i++) {
             let quantity = cartData[i].quentity;
-            let price = cartData[i].price;
+            let price = cartData[i].offerPrice;
             total += quantity * price
         }
         req.session.totalOrderValue = total
@@ -210,19 +229,21 @@ const checkOut = async (req, res) => {
 
         res.render("checkout", { userIn, Category, address, total, cartData })
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with checkOut" + e);
     }
 }
 
 const displayAddress = async (req, res) => {
     try {
-        console.log(req.body + "function worked");
+
         const id = req.body.addressId
-        console.log(id)
+
         const data = await addressPro.findOne({ _id: id })
-        console.log(data)
+
         res.json({ data })
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with display address" + e);
     }
 }
@@ -231,8 +252,7 @@ const displayAddress = async (req, res) => {
 const createAddress = async (req, res) => {
     try {
         const userin = req.session.userName;
-        console.log(userin);
-        console.log(req.body);
+        
         const newAddress = new addressPro({
             username: userin,
             fullname: req.body.fullname,
@@ -250,6 +270,7 @@ const createAddress = async (req, res) => {
         res.redirect("/checkOut")
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error with create address" + e);
     }
 }

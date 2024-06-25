@@ -37,7 +37,7 @@
 	<link rel="stylesheet" href="/css/reponsive.css">
 
 	<style>
-		.header-top{
+		.header-top {
 			margin-top: 0;
 		}
 	</style>
@@ -53,6 +53,7 @@
 				<div class="close-topbar">
 					<i class="zmdi zmdi-close"></i>
 				</div>
+
 
 				<!-- Topbar Content -->
 				<div class="container topbar-content">
@@ -80,7 +81,8 @@
 									<div class="dropdown-menu">
 										{{#if userIn}}
 										<div class="item">
-											<a href="/wishlist" title="My Wishlists"><i class="fa fa-heart"></i>My Wishlists</a>
+											<a href="/wishlist" title="My Wishlists"><i class="fa fa-heart"></i>My
+												Wishlists</a>
 										</div>
 										<div class="item">
 											<a href="/signout" title="Register Account"><i
@@ -165,6 +167,9 @@
 							</div>
 						</div>
 
+
+
+
 						<!-- Logo -->
 						<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 							<div class="logo">
@@ -175,84 +180,67 @@
 
 							<span id="toggle-mobile-menu"><i class="zmdi zmdi-menu"></i></span>
 						</div>
-							{{#if userIn}}
+						{{#if userIn}}
+
 						<!-- Cart -->
 						<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 							<div class="block-cart dropdown">
 								<div class="cart-title">
 									<i class="fa fa-shopping-basket"></i>
-									<span class="cart-count">2</span>
+									<span class="cart-count">{{cartCount}}</span>
 								</div>
-
 								<div class="dropdown-content">
 									<div class="cart-content">
 										<table>
 											<tbody>
+												{{#each cartData}}
 												<tr>
 													<td class="product-image">
 														<a href="product-detail-left-sidebar.html">
-															<img src="/img/product/7.jpg" alt="Product">
+															<img src="{{this.image}}" alt="Product">
 														</a>
 													</td>
 													<td>
 														<div class="product-name">
-															<a href="product-detail-left-sidebar.html">Organic
-																Strawberry Fruits</a>
+															<a
+																href="product-detail-left-sidebar.html">{{this.product}}</a>
 														</div>
 														<div>
-															2 x <span class="product-price">$28.98</span>
+															<span class="product-price">Rs {{this.offerPrice}}</span>
 														</div>
 													</td>
 													<td class="action">
-														<a class="remove" href="#">
+														<a class="remove" href="/delete_cart/{{this.product}}">
 															<i class="fa fa-trash-o" aria-hidden="true"></i>
 														</a>
 													</td>
 												</tr>
+												{{/each}}
+												
 
-												<tr>
-													<td class="product-image">
-														<a href="product-detail-left-sidebar.html">
-															<img src="/img/product/6.jpg" alt="Product">
-														</a>
-													</td>
-													<td>
-														<div class="product-name">
-															<a href="product-detail-left-sidebar.html">Organic
-																Strawberry</a>
-														</div>
-														<div>
-															1 x <span class="product-price">$35.00</span>
-														</div>
-													</td>
-													<td class="action">
-														<a class="remove" href="#">
-															<i class="fa fa-trash-o" aria-hidden="true"></i>
-														</a>
-													</td>
-												</tr>
-
-												<tr class="total">
+												{{!-- <tr class="total">
 													<td>Total:</td>
-													<td colspan="2">$92.96</td>
-												</tr>
+													<td colspan="2">Rs {{totalAmount}}</td>
+												</tr> --}}
 
 												<tr>
 													<td colspan="3">
 														<div class="cart-button">
-															<a class="btn btn-primary" href="/userCart"
+															<a class="btn btn-primary"  href="/userCart"
 																title="View Cart">View Cart</a>
-															<a class="btn btn-primary" href="product-checkout.html"
-																title="Checkout">Checkout</a>
+															{{!-- <a class="btn btn-primary" href="product-checkout.html"
+																title="Checkout">Checkout</a> --}}
 														</div>
 													</td>
 												</tr>
+												
 											</tbody>
 										</table>
 									</div>
 								</div>
 							</div>
 						</div>
+
 						{{/if}}
 
 					</div>
@@ -291,6 +279,8 @@
 					</li>
 
 
+
+
 					<li class="dropdown">
 						{{!-- <a href="#" title="Page"></a> --}}
 						<div class="dropdown-menu">
@@ -321,7 +311,7 @@
 						<a href="#" title="User">User</a>
 						<div class="dropdown-menu level2">
 							<ul>
-								<li><a href="user-login.html"  title="Login">Login</a></li>
+								<li><a href="user-login.html" title="Login">Login</a></li>
 								<li><a href="user-register.html" title="Register">Register</a></li>
 								<li><a href="#" title="My Account">My Account</a></li>
 								<li><a href="#" title="My Wishlists">My Wishlists</a></li>

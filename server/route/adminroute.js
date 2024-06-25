@@ -11,6 +11,10 @@ const orderController = require("../controller/adminController/orderController")
 router.get("/", adminController.admin)
 router.post("/", adminController.adminDashboard)
 router.get("/dashboard", adminCheck.isAdmin, adminController.toDashboard)
+router.get("/chart-data", adminCheck.isAdmin, adminController.chartData)
+router.get("/chart-data-month", adminCheck.isAdmin, adminController.chartDataMonth)
+router.get('/chart-data-year', adminCheck.isAdmin, adminController.chartDataYear)
+router.post("/salesReport", adminCheck.isAdmin, orderController.salesReport)
 router.get("/logout", adminController.logout)
 
 
@@ -50,13 +54,13 @@ router.post('/changeStatus', adminCheck.isAdmin, orderController.changeStatus)
 
 // coupon controll
 
-router.get("/coupon",adminCheck.isAdmin,orderController.coupon)
-router.post("/addCoupon",adminCheck.isAdmin,orderController.addCoupon)
-router.get("/removeCoupon",adminCheck.isAdmin,orderController.removeCoupon)
-router.post("/editCoupon",adminCheck.isAdmin,orderController.editCoupon)
+router.get("/coupon", adminCheck.isAdmin, orderController.coupon)
+router.post("/addCoupon", adminCheck.isAdmin, orderController.addCoupon)
+router.get("/removeCoupon", adminCheck.isAdmin, orderController.removeCoupon)
+router.post("/editCoupon", adminCheck.isAdmin, orderController.editCoupon)
 
-router.get("/returnView",adminCheck.isAdmin,orderController.returnView)
-router.post('/handleReturnRequest',adminCheck.isAdmin,orderController.handleReturnRequest)
+router.get("/returnView", adminCheck.isAdmin, orderController.returnView)
+router.post('/handleReturnRequest', adminCheck.isAdmin, orderController.handleReturnRequest)
 
 
 

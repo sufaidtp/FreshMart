@@ -3,7 +3,7 @@ const productDetails = require("../../model/productModel")
 const catDetails = require("../../model/categoryModel")
 const bcrypt = require('bcrypt')
 const sndmail = require("../userController/generateOtp")
-const walletDetails=require("../../model/walletModel")
+const walletDetails = require("../../model/walletModel")
 
 
 
@@ -26,6 +26,7 @@ const register = async (req, res) => {
 
     }
     catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the register usercontroller in user side : " + e);
     }
 
@@ -40,7 +41,7 @@ const registerUser = async (req, res) => {
         if (req.session.isUser) {
             res.redirect("/home")
         } else {
-            console.log(req.body);
+
             const { username, email, moblieno, password } = req.body
             req.session.details = req.body
             console.log(email)
@@ -69,6 +70,7 @@ const registerUser = async (req, res) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the registerUser userRegistration in user side : " + e);
     }
 
@@ -85,6 +87,7 @@ const otpPage = async (req, res) => {
 
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the otpPage userregistration in user side : " + e);
 
     }
@@ -97,7 +100,7 @@ const otpVerification = async (req, res) => {
             res.redirect("/home")
         } else {
 
-            console.log("kn")
+
             console.log(req.body.otp)
             const otptime = Date.now()
             const diff = otptime - time
@@ -128,8 +131,8 @@ const otpVerification = async (req, res) => {
                         userId: userData._id,
                         wallet: 0,
                         history: [],
-                      });
-                      await wallet.save();
+                    });
+                    await wallet.save();
                     res.redirect("/login")
                 } else {
                     res.redirect("/register?uname=Time expierd")
@@ -141,6 +144,7 @@ const otpVerification = async (req, res) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the otpVerification userregistration in user side : " + e);
 
     }
@@ -149,7 +153,7 @@ const otpVerification = async (req, res) => {
 var resetOtp
 
 const resetotpv = async (req, res) => {
-    console.log(req.body.otp);
+
     try {
         if (req.session.isUser) {
             res.redirect("/home")
@@ -175,6 +179,7 @@ const resetotpv = async (req, res) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the resetotpv userregistration in user side : " + e);
 
     }
@@ -193,6 +198,7 @@ const reset_otp_verification = async (req, res) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the reset_otp_verification  userregistration in user side : " + e);
     }
 }
@@ -204,7 +210,7 @@ const resetotpverification = async (req, res) => {
         } else {
             let num = parseInt(resetOtp)
             console.log(req.body.otp);
-            console.log(num);
+
             if (num == req.body.otp) {
                 res.redirect("/reset-password")
             } else {
@@ -213,6 +219,7 @@ const resetotpverification = async (req, res) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the resetotpverification userregistration in user side : " + e);
     }
 }
@@ -226,6 +233,7 @@ const reset_password_get = async (req, res) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the reset_password_get userregistration in user side : " + e);
     }
 
@@ -234,10 +242,7 @@ const reset_password_get = async (req, res) => {
 const newPass = async (req, res) => {
     try {
         const userFound = await userDetails.findOne({ email: req.session.changepass })
-        console.log(userFound);
         const pass = req.body.newpass
-        console.log(req.body.newpass);
-        console.log(req.session.changepass);
         if (userFound) {
             const hashedpass = await bcrypt.hash(pass, 10)
             await userDetails.updateOne({ email: req.session.changepass }, { $set: { password: hashedpass } })
@@ -248,6 +253,7 @@ const newPass = async (req, res) => {
 
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the newPass userregistration in user side : " + e);
     }
 }
@@ -255,7 +261,7 @@ const newPass = async (req, res) => {
 
 const verifyOldpassword = async (req, res) => {
     try {
-        console.log(req.body);
+        
         if (req.body.pass == "123") {
             res.json({ success: true })
         } else {
@@ -263,6 +269,7 @@ const verifyOldpassword = async (req, res) => {
         }
 
     } catch (e) {
+        res.redirect("/errorPage")
         console.log("error in the verifyOldpassword userregistration in user side : " + e);
 
     }
@@ -282,6 +289,7 @@ const resendotp = (req, res) => {
         })
         res.redirect('/otp_Page')
     } catch (e) {
+        res.redirect("/errorPage")
         console.log('error in the resendotp in userRegisterationController in user side:' + e)
 
     }
