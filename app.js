@@ -12,14 +12,6 @@ const app = express()
 
 
 
-
-
-
-
-
-
-
-
 const userRoute = require("./server/route/userRoute")
 const adminRoute = require("./server/route/adminroute")
 
