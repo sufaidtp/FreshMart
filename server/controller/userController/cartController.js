@@ -69,6 +69,16 @@ const removeWishlist = async (req, res) => {
         console.log("error with remove wishlist" + e);
     }
 }
+const viewDetails = async (req, res) => {
+    try {
+        console.log( req.params.id,"params");
+        const product = await productDetails.findOne({ name: req.params.id })
+        console.log(product,"product");
+        res.redirect(`/productDetails/${product._id}`)
+    } catch (e) {
+        res.redirect("/errorPage")
+    }
+}
 
 const userCart = async (req, res) => {
     try {
@@ -252,7 +262,7 @@ const displayAddress = async (req, res) => {
 const createAddress = async (req, res) => {
     try {
         const userin = req.session.userName;
-        
+
         const newAddress = new addressPro({
             username: userin,
             fullname: req.body.fullname,
@@ -293,4 +303,5 @@ module.exports = {
     checkOut,
     displayAddress,
     createAddress,
+    viewDetails
 }

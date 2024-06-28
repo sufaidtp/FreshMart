@@ -99,9 +99,10 @@ const orderConfirmation = async (req, res) => {
 
 const orderPlaced = async (req, res) => {
     try {
+        const userIn = req.session.userName
         const data = await orderDetails.findOne({ orderID: req.query.id });
         
-        res.render('orderPlaced', { data })
+        res.render('orderPlaced', { data,userIn })
     } catch (e) {
         res.redirect("/errorPage")
         console.log('error in the orderPlaced :', e);

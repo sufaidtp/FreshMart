@@ -68,6 +68,7 @@ router.post("/updatePassword", isUser.isUser, userData.updatePassword)
 router.get("/wishlist", isUser.isUser, cartController.viewWish)
 router.get("/wishlist/:id", isUser.isUser, cartController.addWishlist)
 router.get("/delete_wishlist/:id", isUser.isUser, cartController.removeWishlist)
+router.get("/viewDetails/:id",isUser.isUser,cartController.viewDetails)
 
 // cartDetails
 router.get("/userCart", isUser.isUser, cartController.userCart)

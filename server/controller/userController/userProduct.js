@@ -106,7 +106,7 @@ const categoryProductSort = async (req, res) => {
 
             const product = await productDetails.find({category: cat}).sort({ price: 1 });
             console.log("DATA IF 3 is pressed:" + product);
-            res.render("ProductCategory", {
+            res.render("productCategory", {
                 userIn,
                 product,
                 Category,
@@ -116,7 +116,7 @@ const categoryProductSort = async (req, res) => {
         } else if (number == 4) {
             const product = await productDetails.find({category: cat}).sort({ price: -1 });
             console.log("DATA IF 4 is pressed:" + product);
-            res.render("ProductCategory", {
+            res.render("productCategory", {
                 userIn,
                 product,
                 Category,
