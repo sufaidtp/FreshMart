@@ -5,6 +5,8 @@ const path = require("path")
 require("dotenv").config();
 const bodyParser = require("body-parser")
 const passport = require("passport")
+const usererror = require('./server/controller/userController/userConroller')
+const adminerror = require('./server/controller/adminController/adminController')
 
 const app = express()
 
@@ -108,6 +110,8 @@ app.use(express.static(path.join(__dirname, 'public/uploads')));
 
 app.use("/", userRoute)
 app.use("/admin", adminRoute)
+app.use('/*',usererror.errorPage)
+app.use('/admin/*',adminerror.adminerrorPage);
 
 
 

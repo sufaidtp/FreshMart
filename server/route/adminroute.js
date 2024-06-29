@@ -6,10 +6,12 @@ const productController = require("../controller/adminController/productControll
 const adminCategory = require("../controller/adminController/categoryController")
 const imageUpload = require("../controller/adminController/imageController")
 const orderController = require("../controller/adminController/orderController")
+const { errorPage } = require("../controller/userController/userConroller")
 
 
 router.get("/", adminController.admin)
 router.post("/", adminController.adminDashboard)
+router.get("/errorPage",adminController.adminerrorPage)
 router.get("/dashboard", adminCheck.isAdmin, adminController.toDashboard)
 router.get("/chart-data", adminCheck.isAdmin, adminController.chartData)
 router.get("/chart-data-month", adminCheck.isAdmin, adminController.chartDataMonth)

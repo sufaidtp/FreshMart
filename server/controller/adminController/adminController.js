@@ -28,10 +28,10 @@ const adminDashboard = async (req, res) => {
 
         // const userName = req.body.name;
         const adminFound = await userDetails.findOne({ username: req.body.loginUsername })
-        
+
         if (adminFound && adminFound.isAdmin == 1) {
             passSuccess = await bcrypt.compare(req.body.loginPassword, adminFound.password)
-            
+
             if (passSuccess) {
                 req.session.isAdmin = true
                 // req.session.username = req.body.username
@@ -49,6 +49,9 @@ const adminDashboard = async (req, res) => {
 
     }
 
+}
+const adminerrorPage = async (req, res) => {
+    res.render("errorPage")
 }
 
 const toDashboard = async (req, res) => {
@@ -112,7 +115,7 @@ const toDashboard = async (req, res) => {
 
         const totalRevenue = totalRevenueResult.length > 0 ? totalRevenueResult[0].totalRevenue : 0;
 
-        
+
         const product = await orderDetails.aggregate([
             {
                 $unwind: "$products",
@@ -132,7 +135,7 @@ const toDashboard = async (req, res) => {
         ])
 
 
-        
+
         res.render("dashboard", { userCount, productCount, orderCount, orderStatusP, orderStatusC, orderStatusD, orderStatusO, codPay, online, wallet, totalRevenue, product })
     } catch (e) {
         console.log("problem with toDashboard" + e)
@@ -169,7 +172,7 @@ const chartData = async (req, res) => {
                 }
             }
         ]);
-        
+
         res.json(Aggregation);
     } catch (e) {
 
@@ -181,7 +184,7 @@ const chartData = async (req, res) => {
 
 const chartDataMonth = async (req, res) => {
     try {
-        
+
         const Aggregation = await orderDetails.aggregate([
             {
                 $match: {
@@ -204,7 +207,7 @@ const chartDataMonth = async (req, res) => {
                 }
             }
         ]);
-        
+
         res.json(Aggregation);
     } catch (error) {
 
@@ -215,7 +218,7 @@ const chartDataMonth = async (req, res) => {
 
 const chartDataYear = async (req, res) => {
     try {
-        
+
         const Aggregation = await orderDetails.aggregate([
             {
                 $match: {
@@ -236,7 +239,7 @@ const chartDataYear = async (req, res) => {
                 }
             }
         ]);
-        
+
         res.json(Aggregation);
     } catch (error) {
 
@@ -301,7 +304,7 @@ const list = async (req, res) => {
     try {
         const name = req.params.id
         const productData = await editCat.findOne({ name: name })
-        
+
         let val = 1
         if (productData.list == 1)
             val = 0
@@ -317,4 +320,4 @@ const list = async (req, res) => {
 }
 
 
-module.exports = { admin, adminDashboard, toDashboard, logout, user, searchUser, block, list, chartData, chartDataMonth, chartDataYear }
+module.exports = { admin, adminDashboard, toDashboard, logout, user, searchUser, block, list, chartData, chartDataMonth, chartDataYear, adminerrorPage }
